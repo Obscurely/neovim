@@ -14,7 +14,7 @@ The dependencies are: dotnet-sdk, rustup, black, rust-analyzer, prettier, code-m
 For Arch Linux you can install them like this:
 From pacman
 ```shell
-sudo pacman -Sy dotnet-sdk rustup rust-analyzer prettier glow ripgrep python3 python3-pip --needed
+sudo pacman -Sy dotnet-sdk rustup rust-analyzer prettier glow ripgrep python3 python3-pip xclip --needed
 ```
 From AUR (with yay)
 ```shell
