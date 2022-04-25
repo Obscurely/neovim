@@ -1,6 +1,12 @@
 #!/bin/bash
 
 #
+# Install neovim (basically the whole scope of the project
+#
+pacman -Sy neovim 
+mkdir $HOME/.config/nvim # create nvim dir .config in case the installer didn't
+
+#
 # NVChad Installation
 #
 
