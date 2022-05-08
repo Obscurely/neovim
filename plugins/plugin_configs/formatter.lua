@@ -1,6 +1,6 @@
-local M = {}
+local formatter = require "formatter"
 
-M.filetype = {
+local file_types = {
 	javascript = {
       -- prettier
       function()
@@ -80,5 +80,13 @@ M.filetype = {
       end
     },
 }
+
+local M = {}
+
+M.setup = function()
+   	formatter.setup {
+		filetype = file_types,
+	}
+end
 
 return M
