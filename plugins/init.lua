@@ -51,6 +51,7 @@ return {
     end
   },
   ["mhartington/formatter.nvim"] = {
+    cmd = {"Format"},
     config = function()
       require("custom.plugins.plugin_configs.formatter").setup()
     end
@@ -62,7 +63,7 @@ return {
     end
   },
   ["folke/trouble.nvim"] = {
-	cmd = {"TroubleToggle"},
+    cmd = {"TroubleToggle"},
     requires = "nvim-web-devicons",
     config = function()
       require("trouble").setup()
