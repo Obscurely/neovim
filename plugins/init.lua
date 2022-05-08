@@ -58,6 +58,7 @@ return {
   },
   ["nathom/filetype.nvim"] = {},
   ["simrat39/rust-tools.nvim"] = {
+    ft = {"rust"},
     config = function()
       require("custom.plugins.plugin_configs.rust-tools").setup()
     end
@@ -71,5 +72,10 @@ return {
   },
   ["goolord/alpha-nvim"] = {
     disable = false
+  },
+  ["luukvbaal/stabilize.nvim"] = {
+    config = function()
+      require("stabilize").setup()
+    end
   }
 }
