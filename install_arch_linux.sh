@@ -3,7 +3,7 @@
 #
 # Install neovim (basically the whole scope of the project
 #
-pacman -Sy neovim 
+sudo pacman -Sy neovim 
 mkdir $HOME/.config/nvim # create nvim dir .config in case the installer didn't
 
 #
@@ -19,62 +19,62 @@ git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
 # Packages to install
 
-deps = (
-	'ripgrep', # for telescope to work 
-	'xclip', # for clipboard to work with system
-	'npm', # for installing some LSPs
+deps=(
+	'ripgrep' # for telescope to work 
+	'xclip' # for clipboard to work with system
+	'npm' # for installing some LSPs
 )
 
-languages = (
-	'python3',
+languages=(
+	'python3'
 	'python3-pip' # manager python deps
 	'lua'
-	'cmake',
-	'dotnet-sdk',
-	'jdk-openjdk',
-	'rustup',
-	'go',
+	'cmake'
+	'dotnet-sdk'
+	'jdk-openjdk'
+	'rustup'
+	'go'
 )
 
-lsp_pacman = (
-	'clang',
-	'rust-analyzer',
-	'lua-language-server',
-	'pyright',
-	'gopls',
-	'yaml-language-server',
+lsp_pacman=(
+	'clang'
+	'rust-analyzer'
+	'lua-language-server'
+	'pyright'
+	'gopls'
+	'yaml-language-server'
 )
 
-lsp_yay = (
-	'java-language-server',
-	'taplo-cli',
-	'cmake-language-server',
+lsp_yay=(
+	'java-language-server'
+	'taplo-cli'
+	'cmake-language-server'
 )
 
-lsp_npm = (
-	'vscode-langservers-extracted',
-	'typescript',
-	'typescript-language-server',
-	'bash-language-server',
-	'remark-language-server',
-	'remark',
+lsp_npm=(
+	'vscode-langservers-extracted'
+	'typescript'
+	'typescript-language-server'
+	'bash-language-server'
+	'remark-language-server'
+	'remark'
 )
 
-lsp_dotnet = (
-	'csharp-ls',
+lsp_dotnet=(
+	'csharp-ls'
 )
 
-formatter_pacman = (
-	'prettier',
-	'shfmt',
+formatter_pacman=(
+	'prettier'
+	'shfmt'
 )
 
-formatter_yay = (
-	'python-black-git',	
+formatter_yay=(
+	'python-black-git'	
 )
 
-formatter_npm = (
-	'lua-fmt',
+formatter_npm=(
+	'lua-fmt'
 )
 
 
@@ -83,24 +83,24 @@ formatter_npm = (
 #
 
 # Sync repos
-pacman -Sy --noconfirm
+sudo pacman -Sy --noconfirm
 
 # deps
 for PKG in "${deps[@]}"; do
     echo "INSTALLING: ${PKG}"
-    pacman -S "$PKG" --noconfirm --needed
+    sudo pacman -S "$PKG" --noconfirm --needed
 done
 
 # languages
 for PKG in "${languages[@]}"; do
     echo "INSTALLING: ${PKG}"
-    pacman -S "$PKG" --noconfirm --needed
+    sudo pacman -S "$PKG" --noconfirm --needed
 done
 
 # lsp pacman
 for PKG in "${lsp_pacman[@]}"; do
     echo "INSTALLING: ${PKG}"
-    pacman -S "$PKG" --noconfirm --needed
+    sudo pacman -S "$PKG" --noconfirm --needed
 done
 
 # lsp yay
@@ -112,19 +112,19 @@ done
 # lsp npm
 for PKG in "${lsp_npm[@]}"; do
     echo "INSTALLING: ${PKG}"
-    npm i -g "$PKG"
+    sudo npm i -g "$PKG"
 done
 
 # lsp dotnet
 for PKG in "${lsp_dotnet[@]}"; do
     echo "INSTALLING: ${PKG}"
-    dotnet tool install --global "$PKG"
+    sudo dotnet tool install --global "$PKG"
 done
 
 # formatter pacman 
 for PKG in "${formatter_pacman[@]}"; do
     echo "INSTALLING: ${PKG}"
-    pacman -S "$PKG" --noconfirm --needed
+    sudo pacman -S "$PKG" --noconfirm --needed
 done
 
 # formatter yay
@@ -136,7 +136,7 @@ done
 # formatter npm
 for PKG in "${formatter_npm[@]}"; do
     echo "INSTALLING: ${PKG}"
-    npm i -g "$PKG"
+    sudo npm i -g "$PKG"
 done
 
 
