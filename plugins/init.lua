@@ -1,18 +1,18 @@
 return {
-  ["ggandor/lightspeed.nvim"] = {},
+  ["ggandor/lightspeed.nvim"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"}
+  },
   ["nacro90/numb.nvim"] = {
+    event = "CmdlineEnter",
     config = function()
       require("custom.plugins.plugin_configs.numb").setup()
     end
   },
   ["karb94/neoscroll.nvim"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
     config = function()
       require("custom.plugins.plugin_configs.neoscroll").setup()
     end,
-    -- lazy loading
-    setup = function()
-      require("core.utils").packer_lazy_load "neoscroll.nvim"
-    end
   },
   ["sindrets/diffview.nvim"] = {
     after = "plenary.nvim",
@@ -21,8 +21,11 @@ return {
       require("diffview").setup()
     end
   },
-  ["p00f/nvim-ts-rainbow"] = {},
+  ["p00f/nvim-ts-rainbow"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"}
+  },
   ["folke/lsp-colors.nvim"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
     config = function()
       require("lsp-colors").setup()
     end
@@ -34,18 +37,20 @@ return {
     end
   },
   ["Pocco81/AutoSave.nvim"] = {
+    event = "InsertEnter",
     config = function()
       require("custom.plugins.plugin_configs.autosave").setup()
     end
   },
   ["ethanholz/nvim-lastplace"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
     config = function()
       require("nvim-lastplace").setup()
     end
   },
   ["windwp/nvim-ts-autotag"] = {
     ft = {"html", "javascriptreact"},
-    after = "nvim-treesitter",
+    requires = "nvim-treesitter",
     config = function()
       require("nvim-ts-autotag").setup()
     end
@@ -74,8 +79,12 @@ return {
     disable = false
   },
   ["luukvbaal/stabilize.nvim"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
     config = function()
       require("stabilize").setup()
     end
-  }
+  },
+  ["folke/which-key.nvim"] = {
+    disable = true,
+  },
 }

@@ -14,11 +14,7 @@ M.ui = {
 }
 
 -- mappings aka key-binds
-M.mappings = {
-  misc = function()
-    require("custom.mappings")
-  end
-}
+M.mappings = require "custom.mappings"
 
 -- load plugins
 local userPlugins = require "custom.plugins"
