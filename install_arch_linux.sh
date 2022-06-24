@@ -3,7 +3,7 @@
 #
 # Install neovim (basically the whole scope of the project
 #
-sudo pacman -Sy neovim
+sudo pacman -Sy neovim --noconfirm --needed
 mkdir $HOME/.config/nvim # create nvim dir .config in case the installer didn't
 
 #
