@@ -10,9 +10,9 @@ git clone https://github.com/Obscurely/neovim
 ```shell
 cd neovim
 ```
-3. Run the installer script with sudo
+3. Run the installer script (without sudo)
 ```
-sudo ./install_arch_linux.sh
+./install_arch_linux.sh
 ```
 
 4. If no errors ocurred, for first run, start it with this command
