@@ -12,7 +12,7 @@ cd neovim
 ```
 3. Run the installer script with sudo
 ```
-./install_arch_linux.sh
+sudo ./install_arch_linux.sh
 ```
 
 4. If no errors ocurred, for first run, start it with this command
