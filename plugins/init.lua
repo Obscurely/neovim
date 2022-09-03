@@ -5,13 +5,13 @@ return {
   ["nacro90/numb.nvim"] = {
     event = "CmdlineEnter",
     config = function()
-      require("custom.plugins.plugin_configs.numb").setup()
+      require("custom.plugins.numb").setup()
     end
   },
   ["karb94/neoscroll.nvim"] = {
     event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
     config = function()
-      require("custom.plugins.plugin_configs.neoscroll").setup()
+      require("custom.plugins.neoscroll").setup()
     end,
   },
   ["sindrets/diffview.nvim"] = {
@@ -36,10 +36,10 @@ return {
       require("symbols-outline").setup()
     end
   },
-  ["Pocco81/AutoSave.nvim"] = {
+  ["Pocco81/auto-save.nvim"] = {
     event = "InsertEnter",
     config = function()
-      require("custom.plugins.plugin_configs.autosave").setup()
+      require("custom.plugins.autosave").setup()
     end
   },
   ["ethanholz/nvim-lastplace"] = {
@@ -58,14 +58,14 @@ return {
   ["mhartington/formatter.nvim"] = {
     cmd = {"Format"},
     config = function()
-      require("custom.plugins.plugin_configs.formatter").setup()
+      require("custom.plugins.formatter").setup()
     end
   },
   ["nathom/filetype.nvim"] = {},
   ["simrat39/rust-tools.nvim"] = {
     ft = {"rust"},
     config = function()
-      require("custom.plugins.plugin_configs.rust-tools").setup()
+      require("custom.plugins.rust-tools").setup()
     end
   },
   ["folke/trouble.nvim"] = {
@@ -86,5 +86,14 @@ return {
   },
   ["folke/which-key.nvim"] = {
     disable = true,
+  },
+  ["neovim/nvim-lspconfig"] = {
+    config = function()
+      require "plugins.configs.lspconfig"
+      require "custom.plugins.lspconfig"
+    end,
+  },
+  ["stevearc/vim-arduino"] = {
+    cmd = {"ArduinoAttach"},
   },
 }

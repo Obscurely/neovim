@@ -47,6 +47,8 @@ lsp_pacman=(
 lsp_yay=(
   'java-language-server'
   'cmake-language-server'
+  'arduino-cli-bin'
+  'arduino-language-server-git'
 )
 
 lsp_npm=(
@@ -136,6 +138,9 @@ for PKG in "${formatter_npm[@]}"; do
   echo "INSTALLING: ${PKG}"
   sudo npm i -g "$PKG"
 done
+
+# Arduino config
+arduino-cli config init
 
 #
 # Copy configs

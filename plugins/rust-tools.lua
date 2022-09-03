@@ -7,7 +7,7 @@ M.setup = function()
     tools = {
       -- rust-tools options
       autoSetHints = true,
-      hover_with_actions = true,
+      RustHoverActions = true,
       inlay_hints = {
         show_parameter_hints = false,
         parameter_hints_prefix = "",
