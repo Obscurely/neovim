@@ -18,18 +18,7 @@ M.mappings = require "custom.mappings"
 
 -- load plugins
 local userPlugins = require "custom.plugins"
-local plugin_conf = require "custom.plugins.configs"
 
-M.plugins = {
-  user = userPlugins,
-  override = {
-    ["nvim-treesitter/nvim-treesitter"] = plugin_conf.treesitter,
-    ["NvChad/ui"] = {
-        statusline = {
-        separator_style = "round"
-      },
-    },
-  },
-}
+M.plugins = userPlugins
 
 return M

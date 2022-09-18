@@ -1,4 +1,14 @@
 return {
+  ["nvim-treesitter/nvim-treesitter"] = {
+    override_options = require "custom.plugins.configs",
+  },
+  ["NvChad/ui"] = {
+    override_options = {
+      statusline = {
+        separator_style = "round",
+      },
+    },
+  },
   ["ggandor/lightspeed.nvim"] = {
     event = {"BufNewFile", "BufReadPre", "FilterReadPre"}
   },
@@ -84,9 +94,7 @@ return {
       require("stabilize").setup()
     end
   },
-  ["folke/which-key.nvim"] = {
-    disable = true,
-  },
+  ["folke/which-key.nvim"] = false,
   ["neovim/nvim-lspconfig"] = {
     config = function()
       require "plugins.configs.lspconfig"
