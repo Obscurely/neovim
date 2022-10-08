@@ -104,4 +104,7 @@ return {
   ["stevearc/vim-arduino"] = {
     cmd = {"ArduinoAttach"},
   },
+  ["wakatime/vim-wakatime"] = {
+    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
+  },
 }
