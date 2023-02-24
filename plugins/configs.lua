@@ -1,7 +1,7 @@
 local M = {}
 
 -- nvim treesitter configuration (default plugin)
-M.treesitter = {
+M = {
   ensure_installed = {
     "lua",
     "html",
@@ -19,19 +19,24 @@ M.treesitter = {
     "toml",
     "make",
     "regex",
-    "yaml"
+    "yaml",
+    "nix",
+    "gitignore",
+    "ini",
+    "markdown",
+    "rasi",
+  },
+  highlight = {
+    enable = true,
   },
   rainbow = {
     enable = true,
-    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
     extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-    max_file_lines = nil -- Do not enable for files with more than n lines, int
-    -- colors = {}, -- table of hex strings
-    -- termcolors = {} -- table of colour name strings
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
   },
   autotag = {
-    enable = true
-  }
+    enable = true,
+  },
 }
 
 return M

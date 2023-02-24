@@ -9,90 +9,87 @@ return {
       },
     },
   },
-  ["ggandor/lightspeed.nvim"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"}
+  ["ggandor/leap.nvim"] = {
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+    config = function()
+      require("leap").add_default_mappings()
+    end,
   },
   ["nacro90/numb.nvim"] = {
     event = "CmdlineEnter",
     config = function()
       require("custom.plugins.numb").setup()
-    end
+    end,
   },
   ["karb94/neoscroll.nvim"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
     config = function()
       require("custom.plugins.neoscroll").setup()
     end,
   },
   ["sindrets/diffview.nvim"] = {
     after = "plenary.nvim",
-    cmd = {"DiffviewOpen"},
+    cmd = { "DiffviewOpen" },
     config = function()
       require("diffview").setup()
-    end
+    end,
   },
-  ["p00f/nvim-ts-rainbow"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"}
+  ["mrjones2014/nvim-ts-rainbow"] = {
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
   },
   ["folke/lsp-colors.nvim"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
     config = function()
       require("lsp-colors").setup()
-    end
+    end,
   },
   ["simrat39/symbols-outline.nvim"] = {
     cmd = "SymbolsOutline",
     config = function()
       require("symbols-outline").setup()
-    end
+    end,
   },
   ["Pocco81/auto-save.nvim"] = {
     event = "InsertEnter",
     config = function()
       require("custom.plugins.autosave").setup()
-    end
+    end,
   },
   ["ethanholz/nvim-lastplace"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
     config = function()
       require("nvim-lastplace").setup()
-    end
+    end,
   },
   ["windwp/nvim-ts-autotag"] = {
-    ft = {"html", "javascriptreact"},
+    ft = { "html", "javascriptreact" },
     requires = "nvim-treesitter",
     config = function()
       require("nvim-ts-autotag").setup()
-    end
-  },
-  ["mhartington/formatter.nvim"] = {
-    cmd = {"Format"},
-    config = function()
-      require("custom.plugins.formatter").setup()
-    end
+    end,
   },
   ["nathom/filetype.nvim"] = {},
   ["simrat39/rust-tools.nvim"] = {
-    ft = {"rust"},
+    ft = { "rust" },
     config = function()
       require("custom.plugins.rust-tools").setup()
-    end
+    end,
   },
   ["folke/trouble.nvim"] = {
-    cmd = {"TroubleToggle"},
+    cmd = { "TroubleToggle" },
     requires = "nvim-web-devicons",
     config = function()
       require("trouble").setup()
-    end
+    end,
   },
   ["goolord/alpha-nvim"] = {
-    disable = false
+    disable = false,
   },
   ["luukvbaal/stabilize.nvim"] = {
-    event = {"BufNewFile", "BufReadPre", "FilterReadPre"},
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
     config = function()
       require("stabilize").setup()
-    end
+    end,
   },
   ["folke/which-key.nvim"] = false,
   ["neovim/nvim-lspconfig"] = {
@@ -102,7 +99,16 @@ return {
     end,
   },
   ["stevearc/vim-arduino"] = {
-    cmd = {"ArduinoAttach"},
+    cmd = { "ArduinoAttach" },
   },
   ["wakatime/vim-wakatime"] = {},
+  ["williamboman/mason.nvim"] = {
+    disable = false, -- TODO: disable after checking what I can install
+  },
+  ["jose-elias-alvarez/null-ls.nvim"] = {
+    after = "nvim-lspconfig",
+    config = function()
+      require "custom.plugins.null-ls"
+    end,
+  },
 }

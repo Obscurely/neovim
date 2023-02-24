@@ -4,7 +4,7 @@ local M = {}
 
 M.setup = function()
   autosave.setup {
-    enabled = true
+    enabled = true,
   }
 end
 

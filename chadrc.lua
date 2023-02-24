@@ -3,14 +3,13 @@ local M = {}
 -- vim options
 M.options = {
   user = function()
-    require("custom.options")
-  end
+    require "custom.options"
+  end,
 }
 
 -- UI related customization
 M.ui = {
-  -- hl_override = {"custom.highlights"},
-  theme = "onedark"
+  theme = "onedark",
 }
 
 -- mappings aka key-binds
