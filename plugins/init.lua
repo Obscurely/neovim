@@ -111,4 +111,28 @@ return {
       require "custom.plugins.null-ls"
     end,
   },
+  ["folke/todo-comments.nvim"] = {
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+    config = function()
+      require("todo-comments").setup()
+    end,
+  },
+  ["saecki/crates.nvim"] = {
+    event = { "BufRead Cargo.toml" },
+    requires = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require "custom.plugins.crates"
+      require("crates").setup()
+    end,
+  },
+  ["ellisonleao/glow.nvim"] = {
+    cmd = "Glow",
+    config = function()
+      require("glow").setup()
+    end,
+  },
+  ["michaelb/sniprun"] = {
+    cmd = "SnipRun",
+    run = "bash ./install.sh",
+  },
 }

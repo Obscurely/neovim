@@ -27,6 +27,8 @@ M.misc = {
     -- Diffview open and close binds
     ["<leader>go"] = { ":DiffviewOpen<CR>" },
     ["<leader>gc"] = { ":DiffviewClose<CR>" },
+    -- Glow, markdown preview
+    ["<leader>gl"] = {":Glow<CR>"},
   },
 }
 
