@@ -151,12 +151,17 @@ return {
     cmd = "SnipRun",
     run = "bash ./install.sh",
   },
-  -- ["rcarriga/nvim-dap-ui"] = {
-  --   ft = "rust",
-  --   requires = {"mfussenegger/nvim-dap"},
-  --   after = "rust-tools.nvim",
-  --   config = function()
-  --     require("dapui").setup()
-  --   end,
-  -- }
+  ["mfussenegger/nvim-dap"] = {
+    ft = { "rust", "cpp", "python", "csharp" },
+    config = function()
+      require "custom.plugins.dap"
+    end,
+  },
+  ["rcarriga/nvim-dap-ui"] = {
+    ft = { "rust", "cpp", "python", "csharp" },
+    requires = { "mfussenegger/nvim-dap" },
+    config = function()
+      require "custom.plugins.dapui"
+    end,
+  },
 }
