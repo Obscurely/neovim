@@ -9,28 +9,28 @@ dap.adapters.lldb = {
 }
 
 dap.adapters.python = {
-  type = 'executable';
-  command = '/etc/profiles/per-user/netrunner/bin/python3';
-  args = { '-m', 'debugpy.adapter' };
+  type = "executable",
+  command = "/etc/profiles/per-user/netrunner/bin/python3",
+  args = { "-m", "debugpy.adapter" },
 }
 
 dap.adapters.coreclr = {
-  type = 'executable',
-  command = '/etc/profiles/per-user/netrunner/bin/netcoredbg',
-  args = {'--interpreter=vscode'}
+  type = "executable",
+  command = "/etc/profiles/per-user/netrunner/bin/netcoredbg",
+  args = { "--interpreter=vscode" },
 }
 
 -- configs
 
 dap.configurations.cpp = {
   {
-    name = 'Launch',
-    type = 'lldb',
-    request = 'launch',
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
     program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
     end,
-    cwd = '${workspaceFolder}',
+    cwd = "${workspaceFolder}",
     stopOnEntry = false,
     args = {},
   },
@@ -39,14 +39,14 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 
 dap.configurations.rust = {
-{
-    name = 'Launch',
-    type = 'lldb',
-    request = 'launch',
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
     program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/target/debug/', 'file')
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
     end,
-    cwd = '${workspaceFolder}',
+    cwd = "${workspaceFolder}",
     stopOnEntry = false,
     args = {},
   },
@@ -54,18 +54,18 @@ dap.configurations.rust = {
 
 dap.configurations.python = {
   {
-    type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
-    request = 'launch';
-    name = "Launch file";
-    program = "${file}"; -- This configuration will launch the current file if used.
+    type = "python", -- the type here established the link to the adapter definition: `dap.adapters.python`
+    request = "launch",
+    name = "Launch file",
+    program = "${file}", -- This configuration will launch the current file if used.
     pythonPath = function()
       local cwd = vim.fn.getcwd()
-      if vim.fn.executable('/etc/profiles/per-user/netrunner/bin/python3') == 1 then
-        return cwd .. '/venv/bin/python'
+      if vim.fn.executable "/etc/profiles/per-user/netrunner/bin/python3" == 1 then
+        return cwd .. "/venv/bin/python"
       else
-        return '/usr/bin/python'
+        return "/usr/bin/python"
       end
-    end;
+    end,
   },
 }
 
@@ -75,7 +75,7 @@ dap.configurations.cs = {
     name = "launch - netcoredbg",
     request = "launch",
     program = function()
-        return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+      return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
     end,
   },
 }

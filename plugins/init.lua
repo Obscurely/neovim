@@ -112,7 +112,7 @@ return {
     event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
   },
   ["williamboman/mason.nvim"] = {
-    disable = false, -- TODO: disable after checking what I can install
+    disable = true,
   },
   ["jose-elias-alvarez/null-ls.nvim"] = {
     after = "nvim-lspconfig",
@@ -132,12 +132,6 @@ return {
     config = function()
       require "custom.plugins.crates"
       require("crates").setup()
-    end,
-  },
-  ["ellisonleao/glow.nvim"] = {
-    cmd = "Glow",
-    config = function()
-      require("glow").setup()
     end,
   },
   ["iamcco/markdown-preview.nvim"] = {
