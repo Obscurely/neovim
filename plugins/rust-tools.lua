@@ -17,7 +17,7 @@ M.setup = function()
         -- Hover actions
         vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
         -- Code action groups
-        vim.keymap.set("n", "<Leader>g", rt.code_action_group.code_action_group, { buffer = bufnr })
+        vim.keymap.set("n", "<Leader>ca", rt.code_action_group.code_action_group, { buffer = bufnr })
         -- Move items
         vim.keymap.set("n", "<C-j>", ":RustMoveItemDown<CR>", { buffer = bufnr })
         vim.keymap.set("n", "<C-k>", ":RustMoveItemUp<CR>", { buffer = bufnr })

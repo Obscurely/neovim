@@ -12,12 +12,13 @@ local servers = {
   "java_language_server",
   "pyright",
   "bashls",
-  "remark_ls",
+  "marksman",
   "gopls",
   "jsonls",
   "taplo",
   "cmake",
   "yamlls",
+  "nil_ls",
 }
 
 for _, lsp in ipairs(servers) do

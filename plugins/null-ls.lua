@@ -12,9 +12,15 @@ local sources = {
 
   -- python
   b.formatting.black,
+  b.diagnostics.flake8,
+  b.diagnostics.mypy,
+  b.diagnostics.vulture,
+
+  -- cpp & c_sharp & java
+  b.formatting.uncrustify,
 
   -- cpp
-  b.formatting.clang_format,
+  b.diagnostics.cppcheck,
 
   -- rust
   b.formatting.rustfmt.with {
@@ -24,6 +30,18 @@ local sources = {
   -- webdev stuff
   b.formatting.deno_fmt,
   b.formatting.prettier,
+  b.diagnostics.tidy,
+
+  -- markdown
+  b.diagnostics.alex,
+  b.diagnostics.mdl,
+  b.diagnostics.proselint,
+
+  -- toml
+  b.formatting.taplo,
+
+  -- go
+  b.formatting.gofumpt,
 
   -- Lua
   b.formatting.stylua,
@@ -31,6 +49,11 @@ local sources = {
   -- Shell
   b.formatting.shfmt,
   b.diagnostics.shellcheck.with { diagnostics_format = "#{m} [#{c}]" },
+
+  -- nix
+  b.formatting.alejandra,
+  b.code_actions.statix,
+  b.diagnostics.deadnix,
 }
 
 null_ls.setup {

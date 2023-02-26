@@ -91,7 +91,14 @@ return {
       require("stabilize").setup()
     end,
   },
-  ["folke/which-key.nvim"] = false,
+  ["folke/which-key.nvim"] = {
+    disable = false,
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 1000
+      require("which-key").setup()
+    end,
+  },
   ["neovim/nvim-lspconfig"] = {
     config = function()
       require "plugins.configs.lspconfig"
@@ -101,7 +108,9 @@ return {
   ["stevearc/vim-arduino"] = {
     cmd = { "ArduinoAttach" },
   },
-  ["wakatime/vim-wakatime"] = {},
+  ["wakatime/vim-wakatime"] = {
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+  },
   ["williamboman/mason.nvim"] = {
     disable = false, -- TODO: disable after checking what I can install
   },
@@ -131,8 +140,23 @@ return {
       require("glow").setup()
     end,
   },
+  ["iamcco/markdown-preview.nvim"] = {
+    run = "cd app && npm install",
+    setup = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  },
   ["michaelb/sniprun"] = {
     cmd = "SnipRun",
     run = "bash ./install.sh",
   },
+  -- ["rcarriga/nvim-dap-ui"] = {
+  --   ft = "rust",
+  --   requires = {"mfussenegger/nvim-dap"},
+  --   after = "rust-tools.nvim",
+  --   config = function()
+  --     require("dapui").setup()
+  --   end,
+  -- }
 }

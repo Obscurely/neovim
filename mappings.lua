@@ -21,14 +21,15 @@ M.misc = {
       end,
       "format",
     }, -- Format when hitting leader + f + r
+    -- ["<leader>g"] = 
     ["<leader><leader>"] = { ":Alpha<CR>" }, -- Open Alpha (dashboard)
     ["<leader>d"] = { ":TroubleToggle<CR>" }, -- trouble key bind (diagnostics)
     ["<leader>a"] = { ":SymbolsOutline<CR>" },
     -- Diffview open and close binds
     ["<leader>go"] = { ":DiffviewOpen<CR>" },
     ["<leader>gc"] = { ":DiffviewClose<CR>" },
-    -- Glow, markdown preview
-    ["<leader>gl"] = {":Glow<CR>"},
+    -- Markdown preview
+    ["<leader>gl"] = {":MarkdownPreviewToggle<CR>"},
   },
 }
 
