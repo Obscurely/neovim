@@ -8,7 +8,9 @@ return {
       require("crates").setup()
     end,
   },
+
   { "michaelb/sniprun", cmd = "SnipRun", build = "bash ./install.sh 1" },
+
   {
     "mfussenegger/nvim-dap",
     ft = { "rust", "cpp", "python", "csharp" },
@@ -16,6 +18,7 @@ return {
       require "custom.plugins.configs.dap"
     end,
   },
+
   {
     "rcarriga/nvim-dap-ui",
     ft = { "rust", "cpp", "python", "csharp" },
@@ -24,6 +27,7 @@ return {
       require "custom.plugins.configs.dapui"
     end,
   },
+
   {
     "folke/todo-comments.nvim",
     event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
@@ -31,6 +35,7 @@ return {
       require("todo-comments").setup()
     end,
   },
+
   {
     "simrat39/symbols-outline.nvim",
     cmd = "SymbolsOutline",
@@ -38,6 +43,7 @@ return {
       require("symbols-outline").setup()
     end,
   },
+
   {
     "folke/lsp-colors.nvim",
     event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
@@ -45,6 +51,7 @@ return {
       require("lsp-colors").setup()
     end,
   },
+
   {
     "windwp/nvim-ts-autotag",
     ft = { "html", "javascriptreact" },
@@ -53,6 +60,7 @@ return {
       require("nvim-ts-autotag").setup()
     end,
   },
+
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -69,6 +77,7 @@ return {
       require "custom.plugins.configs.lspconfig"
     end,
   },
+
   {
     "simrat39/rust-tools.nvim",
     ft = { "rust" },

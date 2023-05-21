@@ -30,6 +30,8 @@ M.misc = {
     ["<leader>gc"] = { ":DiffviewClose<CR>" },
     -- Markdown preview
     ["<leader>gl"] = { ":MarkdownPreviewToggle<CR>" },
+    -- update nvchad
+    ["<leader>uu"] = { ":NvChadUpdate<CR>" },
   },
 }
 

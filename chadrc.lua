@@ -7,11 +7,21 @@ M.options = {
   end,
 }
 
--- UI related customization
+-- UI related customizaion
 M.ui = {
   theme = "onedark",
+  cmp = {
+    lspkind_text = true,
+    icons = true,
+    style = "atom",
+    selected_item_bg = "colored",
+  },
   statusline = {
+    theme = "minimal",
     separator_style = "round",
+  },
+  nvdash = {
+    load_on_startup = true,
   },
 }
 

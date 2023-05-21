@@ -5,6 +5,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = overrides.treesitter,
   },
+
   {
     "sindrets/diffview.nvim",
     dependencies = "plenary.nvim",
@@ -13,6 +14,7 @@ return {
       require("diffview").setup()
     end,
   },
+
   {
     "Pocco81/auto-save.nvim",
     event = "InsertEnter",
@@ -20,7 +22,9 @@ return {
       require("custom.plugins.configs.autosave").setup()
     end,
   },
+
   { "nathom/filetype.nvim" },
+
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle" },
@@ -29,6 +33,7 @@ return {
       require("trouble").setup()
     end,
   },
+
   {
     "folke/which-key.nvim",
     enabled = true,
@@ -38,7 +43,9 @@ return {
       require("which-key").setup()
     end,
   },
+
   { "williamboman/mason.nvim", enabled = false },
+
   {
     "iamcco/markdown-preview.nvim",
     build = "cd app && npm install",
