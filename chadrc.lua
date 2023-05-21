@@ -10,14 +10,15 @@ M.options = {
 -- UI related customization
 M.ui = {
   theme = "onedark",
+  statusline = {
+    separator_style = "round",
+  },
 }
 
 -- mappings aka key-binds
 M.mappings = require "custom.mappings"
 
 -- load plugins
-local userPlugins = require "custom.plugins"
-
-M.plugins = userPlugins
+M.plugins = "custom.plugins"
 
 return M

@@ -1,7 +1,7 @@
 local M = {}
 
 -- nvim treesitter configuration (default plugin)
-M = {
+M.treesitter = {
   ensure_installed = {
     "lua",
     "html",
