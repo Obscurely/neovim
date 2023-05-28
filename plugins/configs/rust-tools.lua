@@ -24,6 +24,13 @@ M.setup = function()
         -- Open cargo file
         vim.keymap.set("n", "<leader>c", ":RustOpenCargo<CR>", { buffer = bufnr })
       end,
+      settings = {
+        ["rust-analyzer"] = {
+          check = {
+            command = "clippy",
+          },
+        },
+      },
     },
   }
 end
