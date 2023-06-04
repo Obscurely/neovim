@@ -56,9 +56,9 @@ local sources = {
   b.diagnostics.deadnix,
 
   -- yaml
-  -- b.diagnostics.yamllint,
-  -- b.diagnostics.actionlint, -- github actions linter
-  -- b.formatting.yamlfmt,
+  b.diagnostics.yamllint,
+  b.diagnostics.actionlint, -- github actions linter
+  b.formatting.yamlfmt,
 }
 
 null_ls.setup {
