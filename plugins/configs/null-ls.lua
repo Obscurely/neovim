@@ -54,6 +54,11 @@ local sources = {
   b.formatting.alejandra,
   b.code_actions.statix,
   b.diagnostics.deadnix,
+
+  -- yaml
+  -- b.diagnostics.yamllint,
+  -- b.diagnostics.actionlint, -- github actions linter
+  -- b.formatting.yamlfmt,
 }
 
 null_ls.setup {
