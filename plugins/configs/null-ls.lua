@@ -58,7 +58,9 @@ local sources = {
   -- yaml
   b.diagnostics.yamllint,
   b.diagnostics.actionlint, -- github actions linter
-  b.formatting.yamlfmt,
+  b.formatting.yamlfmt.with {
+    extra_args = { "--formatter", "include_document_start=true" },
+  },
 }
 
 null_ls.setup {
