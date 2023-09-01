@@ -1,1 +1,1 @@
--- nvchad.no_WhichKey_map()
+vim.cmd [[ autocmd BufRead,BufNewFile *.slint set filetype=slint ]]

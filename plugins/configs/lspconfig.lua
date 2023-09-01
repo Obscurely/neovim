@@ -19,6 +19,7 @@ local servers = {
   "cmake",
   "yamlls",
   "nil_ls",
+  "slint_lsp",
 }
 
 for _, lsp in ipairs(servers) do
