@@ -54,6 +54,7 @@ return {
     end,
     ft = { "markdown" },
   },
+
   {
     "tpope/vim-obsession",
   },

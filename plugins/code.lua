@@ -28,6 +28,8 @@ return {
     end,
   },
 
+  { "nvim-neotest/nvim-nio" },
+
   {
     "folke/todo-comments.nvim",
     event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
@@ -83,6 +85,14 @@ return {
     ft = { "rust" },
     config = function()
       require("custom.plugins.configs.rust-tools").setup()
+    end,
+  },
+
+  {
+    "David-Kunz/gen.nvim",
+    cmd = { "Gen" },
+    config = function()
+      require("custom.plugins.configs.gen").setup()
     end,
   },
 }

@@ -30,9 +30,17 @@ M.misc = {
     ["<leader>gc"] = { ":DiffviewClose<CR>" },
     -- Markdown preview
     ["<leader>gl"] = { ":MarkdownPreviewToggle<CR>" },
+    -- Gen.nvim (self hosted AI)
+    ["<leader>gg"] = { ":Gen Generate<CR>"},
+    ["<leader>gq"] = { ":Gen Chat<CR>"},
+    ["<leader>gm"] = { ":Gen<CR>"},
     -- update nvchad
     ["<leader>uu"] = { ":NvChadUpdate<CR>" },
   },
+  v = {
+    -- Gen.nvim (self hosted AI)
+    ["<leader>gm"] = { ":Gen<CR>"},
+  }
 }
 
 return M
