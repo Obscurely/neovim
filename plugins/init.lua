@@ -7,6 +7,11 @@ return {
   },
 
   {
+    "hrsh7th/nvim-cmp",
+    opts = overrides.cmp,
+  },
+
+  {
     "sindrets/diffview.nvim",
     dependencies = "plenary.nvim",
     cmd = { "DiffviewOpen" },

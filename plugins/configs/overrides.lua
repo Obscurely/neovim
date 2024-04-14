@@ -39,4 +39,15 @@ M.treesitter = {
   },
 }
 
+M.cmp = {
+  sources = {
+    { name = "luasnip" },
+    { name = "nvim_lua" },
+    { name = "buffer" },
+    { name = "nvim_lsp" },
+    { name = "path" },
+    { name = "codeium" },
+  },
+}
+
 return M

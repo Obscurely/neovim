@@ -95,4 +95,16 @@ return {
       require("custom.plugins.configs.gen").setup()
     end,
   },
+
+  {
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    event = { "InsertEnter" },
+    config = function()
+      require("custom.plugins.configs.codeium").setup()
+    end,
+  },
 }
