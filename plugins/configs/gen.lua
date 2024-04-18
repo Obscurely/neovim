@@ -35,7 +35,7 @@ M.setup = function()
       model = "deepseek-coder-optimized:latest",
     },
 
-    Chat = { prompt = "$input", model = "mistral-optimized:latest" },
+    Chat_Code = { prompt = "$input", model = "deepseek-coder-optimized:latest" },
 
     Review_Code = {
       prompt =
@@ -66,6 +66,8 @@ M.setup = function()
       extract = "```$filetype\n(.-)```",
       model = "deepseek-coder-optimized:latest",
     },
+
+    Chat = { prompt = "$input", model = "mistral-optimized:latest" },
 
     Summarize = {
       prompt = "Please provide a concise summary of the text below:\n$text",

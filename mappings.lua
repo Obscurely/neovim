@@ -32,7 +32,7 @@ M.misc = {
     ["<leader>gl"] = { ":MarkdownPreviewToggle<CR>" },
     -- Gen.nvim (self hosted AI)
     ["<leader>gg"] = { ":Gen Generate<CR>"},
-    ["<leader>gq"] = { ":Gen Chat<CR>"},
+    ["<leader>gq"] = { ":Gen Chat_Code<CR>"},
     ["<leader>gm"] = { ":Gen<CR>"},
     -- update nvchad
     ["<leader>uu"] = { ":NvChadUpdate<CR>" },

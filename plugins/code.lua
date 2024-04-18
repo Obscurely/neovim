@@ -68,7 +68,7 @@ return {
     dependencies = {
       -- format & linting
       {
-        "jose-elias-alvarez/null-ls.nvim",
+        "nvimtools/none-ls.nvim",
         config = function()
           require "custom.plugins.configs.null-ls"
         end,
