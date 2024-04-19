@@ -11,10 +11,10 @@ local sources = {
   b.formatting.gofmt,
 
   -- python
-  b.formatting.black,
-  b.diagnostics.flake8,
-  b.diagnostics.mypy,
-  b.diagnostics.vulture,
+  b.diagnostics.ruff,
+  b.formatting.ruff.with {
+    args = { "format", "-q", "-n", "-" },
+  },
 
   -- cpp & c_sharp & java
   b.formatting.uncrustify,
