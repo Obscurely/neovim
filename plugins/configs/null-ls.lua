@@ -29,7 +29,7 @@ local sources = {
 
   -- webdev stuff
   b.formatting.deno_fmt,
-  b.formatting.prettier,
+  b.formatting.prettierd,
   b.diagnostics.tidy,
 
   -- markdown
@@ -64,6 +64,6 @@ local sources = {
 }
 
 null_ls.setup {
-  debug = true,
+  -- debug = true,
   sources = sources,
 }

@@ -68,7 +68,7 @@ return {
     dependencies = {
       -- format & linting
       {
-        "nvimtools/null-ls.nvim",
+        "jose-elias-alvarez/null-ls.nvim",
         config = function()
           require "custom.plugins.configs.null-ls"
         end,
@@ -98,6 +98,7 @@ return {
 
   {
     "Exafunction/codeium.nvim",
+    commit = "a3ec7d0dff7527edf38ff76b62b0a85d87d1b05b",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "hrsh7th/nvim-cmp",
@@ -106,5 +107,17 @@ return {
     config = function()
       require("custom.plugins.configs.codeium").setup()
     end,
+  },
+
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cond = function()
+      return vim.fn.filereadable(vim.fn.getcwd() .. "/tailwind.config.js") > 0
+    end,
+    config = function()
+      require("custom.plugins.configs.tailwind-tools").setup()
+    end,
+    ft = "html",
   },
 }

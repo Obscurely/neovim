@@ -4,7 +4,6 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 local lspconfig = require "lspconfig"
 -- lspservers with default config
 local servers = {
-  "html",
   "cssls",
   "clangd",
   "tsserver",
@@ -70,4 +69,23 @@ lspconfig["lua_ls"].setup {
       },
     },
   },
+}
+
+-- HTML (doing both here because I don't want htmx loading before html)
+lspconfig["html"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  init_options = {
+    provideFormatter = false
+  },
+}
+
+lspconfig["htmx"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+lspconfig["tailwindcss"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }

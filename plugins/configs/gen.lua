@@ -5,7 +5,7 @@ local M = {}
 M.setup = function()
   -- Options
   gen.setup {
-    model = "deepseek-coder-optimized:latest", -- The default model to use.
+    model = "codeqwen-optimized:latest", -- The default model to use.
     host = "ollama.server.com",                -- The host running the Ollama service.
     port = "443",                              -- The port on which the Ollama service is listening.
     quit_map = "q",                            -- set keymap for close the response window
@@ -32,15 +32,15 @@ M.setup = function()
       prompt = "$input",
       replace = true,
       extract = "```$filetype\n(.-)```",
-      model = "deepseek-coder-optimized:latest",
+      model = "codeqwen-optimized:latest",
     },
 
-    Chat_Code = { prompt = "$input", model = "deepseek-coder-optimized:latest" },
+    Chat_Code = { prompt = "$input", model = "codeqwen-optimized:latest" },
 
     Review_Code = {
       prompt =
       "Please analyze the following code snippet and provide specific, actionable suggestions for improvement:\n```$filetype\n$text\n```",
-      model = "deepseek-coder-optimized:latest",
+      model = "codeqwen-optimized:latest",
     },
 
     Fix_Code = {
@@ -48,7 +48,7 @@ M.setup = function()
       "Please debug and optimize this code snippet. Identify any syntax errors, logic flaws, or inefficiencies and provide a corrected version: Only ouput the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
       replace = true,
       extract = "```$filetype\n(.-)```",
-      model = "deepseek-coder-optimized:latest",
+      model = "codeqwen-optimized:latest",
     },
 
     Enhance_Code = {
@@ -56,7 +56,7 @@ M.setup = function()
       "Refactor the provided code snippet for improved efficiency and readability. Ensure that the refactored code adheres strictly to coding best practices, including the DRY (Don't Repeat Yourself) principle. Add descriptive comments to clarify any complex logic involved. Aim for optimal performance and maintainability. Only output the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
       replace = true,
       extract = "```$filetype\n(.-)```",
-      model = "deepseek-coder-optimized:latest",
+      model = "codeqwen-optimized:latest",
     },
 
     Change_Code = {
@@ -64,56 +64,58 @@ M.setup = function()
       "Regarding the following code, $input. Only output the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
       replace = true,
       extract = "```$filetype\n(.-)```",
-      model = "deepseek-coder-optimized:latest",
+      model = "codeqwen-optimized:latest",
     },
 
-    Chat = { prompt = "$input", model = "mistral-optimized:latest" },
+    Chat = { prompt = "$input", model = "llama3-optimized:latest" },
 
     Summarize = {
       prompt = "Please provide a concise summary of the text below:\n$text",
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
-    Ask = { prompt = "Regarding the following text, $input:\n$text", model = "mistral-optimized:latest" },
+    Ask = { prompt = "Regarding the following text, $input:\n$text", model = "llama3-optimized:latest" },
+
+    Ask_Code = { prompt = "Regarding the following snippet, $input:\n$text", model = "codeqwen-optimized:latest" },
 
     Change = {
       prompt =
       "Change the following text, $input. Just output the final text without additional quotes around it:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
     Enhance_Grammar_Spelling = {
       prompt =
       "Revise the following text to enhance grammar and spelling accuracy. Just output the final text without additional quotes around it:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
     Enhance_Wording = {
       prompt =
       "Revise the following text to enhance its clarity and effectiveness. Just output the final text without additional quotes around it:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
     Make_Concise = {
       prompt = "Simplify the text below. Just output the final text without additional quotes around it:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
     Make_List = {
       prompt = "Please convert the text below into a markdown-formatted list:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
 
     Make_Table = {
       prompt =
       "Please convert the following data into a well-structured markdown table format. Include headers as appropriate and ensure the data is neatly organized in rows and columns with appropriate alignments:\n$text",
       replace = true,
-      model = "mistral-optimized:latest",
+      model = "llama3-optimized:latest",
     },
   } -- clear all the promps so I can set only the ones I need
 end
