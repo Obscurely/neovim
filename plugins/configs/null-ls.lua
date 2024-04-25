@@ -30,7 +30,11 @@ local sources = {
   -- webdev stuff
   b.formatting.deno_fmt,
   b.formatting.prettierd,
-  b.diagnostics.tidy,
+  b.diagnostics.tidy.with {
+    condition = function(utils)
+      return not utils.root_has_file("pyproject.toml")
+    end,
+  },
 
   -- markdown
   b.diagnostics.alex,

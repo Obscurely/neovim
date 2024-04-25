@@ -71,7 +71,8 @@ lspconfig["lua_ls"].setup {
   },
 }
 
--- HTML (doing both here because I don't want htmx loading before html)
+-- HTML (doing both here because I don't want htmx or tailwindcss loading before html)
+--
 lspconfig["html"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
@@ -86,6 +87,11 @@ lspconfig["htmx"].setup {
 }
 
 lspconfig["tailwindcss"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+}
+
+lspconfig["emmet_ls"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
 }
