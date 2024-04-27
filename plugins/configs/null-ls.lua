@@ -68,7 +68,8 @@ local sources = {
 
   -- terraform
   b.diagnostics.tfsec,
-  b.formatting.terraform_fmt
+  b.diagnostics.terraform_validate,
+  b.formatting.terraform_fmt,
 }
 
 null_ls.setup {
