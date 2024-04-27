@@ -65,6 +65,10 @@ local sources = {
   b.formatting.yamlfmt.with {
     extra_args = { "--formatter", "include_document_start=true" },
   },
+
+  -- terraform
+  b.diagnostics.tfsec,
+  b.formatting.terraform_fmt
 }
 
 null_ls.setup {

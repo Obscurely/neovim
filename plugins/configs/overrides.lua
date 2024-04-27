@@ -25,6 +25,7 @@ M.treesitter = {
     "ini",
     "markdown",
     "rasi",
+    "terraform",
   },
   highlight = {
     enable = true,

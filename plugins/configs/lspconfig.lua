@@ -19,6 +19,8 @@ local servers = {
   "yamlls",
   "nil_ls",
   "slint_lsp",
+  "terraformls",
+  "ansiblels",
 }
 
 for _, lsp in ipairs(servers) do
