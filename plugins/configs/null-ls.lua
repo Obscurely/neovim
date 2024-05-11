@@ -70,6 +70,9 @@ local sources = {
   b.diagnostics.tfsec,
   b.diagnostics.terraform_validate,
   b.formatting.terraform_fmt,
+
+  -- docker
+  b.diagnostics.hadolint,
 }
 
 null_ls.setup {

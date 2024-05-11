@@ -20,7 +20,8 @@ local servers = {
   "nil_ls",
   "slint_lsp",
   "terraformls",
-  "ansiblels",
+  "docker_compose_language_service",
+  "dockerls",
 }
 
 for _, lsp in ipairs(servers) do
@@ -79,7 +80,7 @@ lspconfig["html"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
   init_options = {
-    provideFormatter = false
+    provideFormatter = false,
   },
 }
 
@@ -96,4 +97,27 @@ lspconfig["tailwindcss"].setup {
 lspconfig["emmet_ls"].setup {
   on_attach = on_attach,
   capabilities = capabilities,
+}
+
+-- Ansible
+lspconfig["ansiblels"].setup {
+  on_attach = on_attach,
+  filetypes = { "yaml", "yml" },
+  capabilities = capabilities,
+  root_dir = function(fname)
+    local root_files = {
+      "hosts",
+    }
+
+    -- Check for the 'role' directory
+    local is_role_directory = vim.fn.isdirectory "roles" == 1
+
+    if is_role_directory then
+      table.insert(root_files, "roles")
+    end
+
+    return lspconfig.util.root_pattern(unpack(root_files))(fname)
+        or lspconfig.util.find_git_ancestor(fname)
+        or vim.fn.getcwd()
+  end,
 }
