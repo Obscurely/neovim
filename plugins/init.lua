@@ -32,7 +32,7 @@ return {
 
   {
     "folke/trouble.nvim",
-    cmd = { "TroubleToggle" },
+    cmd = { "Trouble" },
     dependencies = "nvim-web-devicons",
     config = function()
       require("trouble").setup()
