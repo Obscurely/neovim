@@ -117,6 +117,11 @@ M.setup = function()
       replace = true,
       model = "llama3-optimized:latest",
     },
+
+    Gen_Py_Docstring = {
+      prompt = "Regarding the following snippet, generate a minimal doc string following the PEP convention. Only output the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
+      model = "codeqwen-optimized:latest"
+    },
   } -- clear all the promps so I can set only the ones I need
 end
 

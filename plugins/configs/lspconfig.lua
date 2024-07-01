@@ -22,6 +22,7 @@ local servers = {
   "terraformls",
   "docker_compose_language_service",
   "dockerls",
+  "arduino_language_server"
 }
 
 for _, lsp in ipairs(servers) do
@@ -30,23 +31,6 @@ for _, lsp in ipairs(servers) do
     capabilities = capabilities,
   }
 end
-
--- Arduino language server config
-lspconfig["arduino_language_server"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  cmd = {
-    "arduino-language-server",
-    "-cli-config",
-    ".arduino15/arduino-cli.yaml",
-    "-fqbn",
-    "arduino:avr:uno",
-    "-cli",
-    "arduino-cli",
-    "-clangd",
-    "clangd",
-  },
-}
 
 -- Lua language server config
 lspconfig["lua_ls"].setup {
