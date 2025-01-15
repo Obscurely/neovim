@@ -23,8 +23,7 @@ M.misc = {
     }, -- Format when hitting leader + f + r
     -- ["<leader>g"] =
     ["<leader><leader>"] = { ":Nvdash<CR>" }, -- Open Alpha (dashboard)
-    ["<leader>d"] = { ":Trouble diagnostics toggle<CR>" }, -- trouble key bind (diagnostics)
-    ["<leader>tt"] = { ":Trouble todo toggle<CR>" }, -- trouble todos bind
+    ["<leader>d"] = { ":TroubleToggle<CR>" }, -- trouble key bind (diagnostics)
     ["<leader>a"] = { ":SymbolsOutline<CR>" },
     -- Diffview open and close binds
     ["<leader>go"] = { ":DiffviewOpen<CR>" },
