@@ -110,6 +110,23 @@ return {
   },
 
   {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+    config = function()
+      require("custom.plugins.configs.codecompanion").setup()
+    end,
+  },
+
+  {
+    "github/copilot.vim",
+    event = { "InsertEnter" },
+  },
+
+  {
     "luckasRanarison/tailwind-tools.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cond = function()
