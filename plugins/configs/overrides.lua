@@ -45,6 +45,7 @@ M.cmp = {
     { name = "nvim_lsp" },
     { name = "path" },
     { name = "codeium" },
+    { name = "codecompanion" },
   },
 }
 

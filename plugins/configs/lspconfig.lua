@@ -6,7 +6,7 @@ local lspconfig = require "lspconfig"
 local servers = {
   "cssls",
   "clangd",
-  "tsserver",
+  "ts_ls",
   "csharp_ls",
   "java_language_server",
   "pyright",
