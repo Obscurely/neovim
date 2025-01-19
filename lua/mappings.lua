@@ -30,6 +30,8 @@ map(
   ":Trouble lsp_references toggle focus=true<CR>",
   { desc = "Toggle open lsp_references (trouble)" }
 )
+-- Neogen
+map("n", "<leader>n", ":Neogen<CR>", { desc = "Run Neogen" })
 -- Markdown preview
 map("n", "<leader>gl", ":MarkdownPreviewToggle<CR>", { desc = "Toggle open markdown preview" })
 -- Gen.nvim (self hosted AI)

@@ -77,6 +77,14 @@ return {
 
   { "michaelb/sniprun", cmd = "SnipRun", build = "bash ./install.sh 1" },
 
+  -- Writting docs
+  {
+    "danymat/neogen",
+    config = true,
+    version = "*",
+    cmd = { "Neogen" },
+  },
+
   -- auto close tags in html and javascript
   {
     "windwp/nvim-ts-autotag",
