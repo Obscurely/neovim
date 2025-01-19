@@ -1,3 +1,7 @@
+-- NVChad options
+require "nvchad.options"
+
+-- My options
 local opt = vim.opt
 local g = vim.g
 
@@ -28,7 +32,7 @@ opt.undofile = true -- enable persistent undo
 opt.updatetime = 300 -- faster completion
 opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program) it is not allowed to be edited
 opt.expandtab = false -- forces the use of tabs
-opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
+opt.shiftwidth = 2 -- the number of spaces inserted for each indentation
 opt.tabstop = 4 -- insert 2 spaces for a tab
 opt.cursorline = true -- highlight the current line
 opt.number = true -- set numbered lines\
@@ -40,6 +44,7 @@ opt.spell = false
 opt.spelllang = "en"
 opt.scrolloff = 8
 opt.sidescrolloff = 8
+opt.splitkeep = "screen" -- i.e open the terminal over the buffer instead of moving the buffer above
 
 -- vim.g options
 g.did_load_filetypes = 1 -- disable default loadtypes plugins thing in order to use the new filetypes.nvim one

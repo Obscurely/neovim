@@ -17,7 +17,7 @@ M.setup = function()
       anthropic = function()
         return require("codecompanion.adapters").extend("anthropic", {
           env = {
-            api_key = "cmd:gpg --decrypt ~/.anthropic/api.key.gpg 2>/dev/null"
+            api_key = "cmd:gpg --decrypt ~/.anthropic/api.key.gpg 2>/dev/null",
           },
           schema = {
             model = {
@@ -27,7 +27,6 @@ M.setup = function()
         })
       end,
     },
-
 
     display = {
       action_palette = {

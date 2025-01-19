@@ -1,56 +1,59 @@
 local dap = require "dap"
 
 -- adapters
-
-dap.adapters.lldb = {
-  type = "executable",
-  command = "/etc/profiles/per-user/netrunner/bin/lldb-vscode", -- adjust as needed, must be absolute path
-  name = "lldb",
+dap.adapters.codelldb = {
+  type = "server",
+  port = "${port}",
+  executable = {
+    command = "codelldb",
+    args = { "--port", "${port}" },
+  },
 }
 
 dap.adapters.python = {
   type = "executable",
-  command = "/etc/profiles/per-user/netrunner/bin/python3",
+  command = "/etc/profiles/per-user/" .. os.getenv "USER" .. "/bin/python3",
   args = { "-m", "debugpy.adapter" },
 }
 
 dap.adapters.coreclr = {
   type = "executable",
-  command = "/etc/profiles/per-user/netrunner/bin/netcoredbg",
+  command = "/etc/profiles/per-user/" .. os.getenv "USER" .. "/bin/netcoredbg",
   args = { "--interpreter=vscode" },
 }
 
--- configs
-
+-- cpp
 dap.configurations.cpp = {
   {
     name = "Launch",
-    type = "lldb",
+    type = "codelldb",
     request = "launch",
     program = function()
       return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
     end,
     cwd = "${workspaceFolder}",
     stopOnEntry = false,
-    args = {},
   },
 }
 
+-- c
 dap.configurations.c = dap.configurations.cpp
 
+-- rust
 dap.configurations.rust = {
   {
     name = "Launch",
-    type = "lldb",
+    type = "codelldb",
     request = "launch",
     program = function()
       return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
     end,
     cwd = "${workspaceFolder}",
     stopOnEntry = false,
-    args = {},
   },
 }
+
+-- python
 
 dap.configurations.python = {
   {
@@ -60,7 +63,7 @@ dap.configurations.python = {
     program = "${file}", -- This configuration will launch the current file if used.
     pythonPath = function()
       local cwd = vim.fn.getcwd()
-      if vim.fn.executable "/etc/profiles/per-user/netrunner/bin/python3" == 1 then
+      if vim.fn.executable "/etc/profiles/per-user/" .. os.getenv "USER" .. "/bin/python3" == 1 then
         return cwd .. "/venv/bin/python"
       else
         return "/usr/bin/python"
@@ -68,6 +71,8 @@ dap.configurations.python = {
     end,
   },
 }
+
+-- c sharp
 
 dap.configurations.cs = {
   {
@@ -81,8 +86,10 @@ dap.configurations.cs = {
 }
 
 -- binds
-local opts = { noremap = true, silent = true, desc = "DAP, key is action prefix" }
-vim.keymap.set("n", "<leader>rb", dap.toggle_breakpoint, opts)
-vim.keymap.set("n", "<leader>rr", dap.continue, opts)
-vim.keymap.set("n", "<leader>ro", dap.step_over, opts)
-vim.keymap.set("n", "<leader>ri", dap.step_into, opts)
+local map = vim.keymap.set
+
+map("n", "<leader>db", dap.toggle_breakpoint, { noremap = true, silent = true, desc = "DAP: toggle breakpoint" })
+map("n", "<leader>dr", dap.continue, { noremap = true, silent = true, desc = "DAP: Run/Continue" })
+map("n", "<leader>do", dap.step_over, { noremap = true, silent = true, desc = "DAP: Step Over" })
+map("n", "<leader>di", dap.step_into, { noremap = true, silent = true, desc = "DAP: Step Into" })
+map("n", "<leader>dt", dap.terminate, { noremap = true, silent = true, desc = "DAP: Terminate" })

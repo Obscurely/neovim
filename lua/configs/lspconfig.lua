@@ -1,8 +1,12 @@
-local on_attach = require("plugins.configs.lspconfig").on_attach
-local capabilities = require("plugins.configs.lspconfig").capabilities
+-- load defaults i.e lua_lsp
+require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
--- lspservers with default config
+
+-- enable lsp inlay hints
+vim.lsp.inlay_hint.enable(true)
+
+-- setup lsp servers
 local servers = {
   "cssls",
   "clangd",
@@ -22,20 +26,31 @@ local servers = {
   "terraformls",
   "docker_compose_language_service",
   "dockerls",
-  "arduino_language_server"
+  "arduino_language_server",
 }
+local nvlsp = require "nvchad.configs.lspconfig"
 
+-- lsps with default config
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
+    on_attach = nvlsp.on_attach,
+    on_init = nvlsp.on_init,
+    capabilities = nvlsp.capabilities,
   }
 end
 
+-- configuring single server, example: typescript
+-- lspconfig.ts_ls.setup {
+--   on_attach = nvlsp.on_attach,
+--   on_init = nvlsp.on_init,
+--   capabilities = nvlsp.capabilities,
+-- }
+
 -- Lua language server config
 lspconfig["lua_ls"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
   settings = {
     Lua = {
       runtime = {
@@ -59,35 +74,39 @@ lspconfig["lua_ls"].setup {
 }
 
 -- HTML (doing both here because I don't want htmx or tailwindcss loading before html)
---
 lspconfig["html"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
   init_options = {
     provideFormatter = false,
   },
 }
 
 lspconfig["htmx"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
 }
 
 lspconfig["tailwindcss"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
 }
 
 lspconfig["emmet_ls"].setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
 }
 
 -- Ansible
 lspconfig["ansiblels"].setup {
-  on_attach = on_attach,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
   filetypes = { "yaml", "yml" },
-  capabilities = capabilities,
+  capabilities = nvlsp.capabilities,
   root_dir = function(fname)
     local root_files = {
       "hosts",
@@ -101,7 +120,7 @@ lspconfig["ansiblels"].setup {
     end
 
     return lspconfig.util.root_pattern(unpack(root_files))(fname)
-        or lspconfig.util.find_git_ancestor(fname)
-        or vim.fn.getcwd()
+      or lspconfig.util.find_git_ancestor(fname)
+      or vim.fn.getcwd()
   end,
 }

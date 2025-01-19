@@ -12,5 +12,5 @@ dap.listeners.before.event_exited["dapui_config"] = function()
 end
 
 -- binds
-local opts = { noremap = true, silent = true, desc = "toggle dapui" }
-vim.keymap.set("n", "<leader>rd", dapui.toggle, opts)
+local opts = { noremap = true, silent = true, desc = "Toggle dapui" }
+vim.keymap.set("n", "<leader>du", dapui.toggle, opts)
