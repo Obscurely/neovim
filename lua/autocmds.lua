@@ -15,7 +15,7 @@ autocmd({ "InsertLeave", "TextChanged", "BufLeave", "FocusLost" }, {
     end
 
     -- Exclude specific filetypes or unmodifiable buffers
-    if vim.bo.filetype == "gitcommit" or vim.bo.buftype == "nofile" then
+    if vim.bo.filetype == "gitcommit" or vim.bo.filetype == "harpoon" or vim.bo.buftype == "nofile" then
       return
     end
 
