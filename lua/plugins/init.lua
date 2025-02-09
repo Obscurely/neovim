@@ -50,8 +50,11 @@ return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
-	config = function()
-	  require("harpoon").setup()
-	end
+    config = function()
+      require("harpoon").setup()
+    end,
   },
+
+  -- keep track of the time spent
+  { "wakatime/vim-wakatime", lazy = false },
 }

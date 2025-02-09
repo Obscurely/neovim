@@ -2,6 +2,13 @@ vim.g.rustaceanvim = {
   -- LSP configuration
   server = {
     on_attach = function(_, bufnr)
+	  -- Enable diagnostics to run on change instead of only on save
+      vim.diagnostic.config({
+        update_in_insert = true,
+        virtual_text = true,
+      })
+
+	  -- keymaps
       local map = vim.keymap.set
 
       map("n", "<leader>ca", function()

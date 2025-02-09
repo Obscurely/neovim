@@ -23,6 +23,10 @@ autocmd({ "InsertLeave", "TextChanged", "BufLeave", "FocusLost" }, {
     if vim.bo.modifiable and vim.bo.modified then
       local success, err = pcall(function()
         vim.cmd "silent! write" -- Silent write to avoid command errors
+
+		if vim.bo.filetype == "rust" then
+		  vim.cmd("RustLsp flyCheck")
+		end
       end)
 
       -- Get the current time

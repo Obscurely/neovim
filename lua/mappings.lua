@@ -12,7 +12,7 @@ map("n", "<leader>s", ":set spell!<CR>", { desc = "Activate/deactivate spelling"
 map("x", "p", '"_dP', { desc = "Paste without overwriting register" })
 
 -- rename variables with lsp
-map("n", "<leader>lr", ':lua require "nvchad.lsp.renamer"()', { desc = "Rename variable under cursor" })
+map("n", "<leader>lr", ':lua require "nvchad.lsp.renamer"()<CR>', { desc = "Rename variable under cursor" })
 
 -- format
 map("n", "<leader>fr", function()
@@ -39,9 +39,10 @@ map("n", "<leader>n", ":Neogen<CR>", { desc = "Run Neogen" })
 -- Markdown preview
 map("n", "<leader>gl", ":MarkdownPreviewToggle<CR>", { desc = "Toggle open markdown preview" })
 
--- Gen.nvim (self hosted AI)
+-- Gen.nvim (self hosted AI) & CodeCompanion (claude)
 map("n", "<leader>gg", ":CodeCompanionChat<CR>", { desc = "Open CodeCompanion chat" })
 map("n", "<leader>ga", ":CodeCompanionActions<CR>", { desc = "Open CodeCompanion actions" })
+map("v", "<leader>ga", ":CodeCompanionActions<CR>", { desc = "Open CodeCompanion actions" })
 map("n", "<leader>gq", ":CodeCompanionCmd", { desc = "Start CodeCompanion cmd" })
 map("n", "<leader>gm", ":Gen<CR>", { desc = "Open gen.nvim menu" })
 map("v", "<leader>gm", ":Gen<CR>", { desc = "Open gen.nvim menu" })
