@@ -21,7 +21,13 @@ M.setup = function()
           },
           schema = {
             model = {
-              default = "claude-3-5-sonnet-20241022",
+              default = "claude-3-7-sonnet-20250219",
+            },
+            extended_output = {
+              default = false,
+            },
+            extended_thinking = {
+              default = false,
             },
           },
         })

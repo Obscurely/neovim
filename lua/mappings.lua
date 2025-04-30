@@ -11,6 +11,9 @@ map("n", "<leader>q", ":q <CR>", { desc = "quit bind" })
 map("n", "<leader>s", ":set spell!<CR>", { desc = "Activate/deactivate spelling" })
 map("x", "p", '"_dP', { desc = "Paste without overwriting register" })
 
+-- code actions
+map("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", { silent = true, desc = "Open code action menu" })
+
 -- rename variables with lsp
 map("n", "<leader>lr", ':lua require "nvchad.lsp.renamer"()<CR>', { desc = "Rename variable under cursor" })
 
@@ -62,23 +65,32 @@ map("n", "<leader>ls", ":Shades<CR>", { desc = "Open shades menu" })
 -- basic telescope configuration
 local conf = require("telescope.config").values
 local function toggle_telescope(harpoon_files)
-    local file_paths = {}
-    for _, item in ipairs(harpoon_files.items) do
-        table.insert(file_paths, item.value)
-    end
+  local file_paths = {}
+  for _, item in ipairs(harpoon_files.items) do
+    table.insert(file_paths, item.value)
+  end
 
-    require("telescope.pickers").new({}, {
-        prompt_title = "Harpoon",
-        finder = require("telescope.finders").new_table({
-            results = file_paths,
-        }),
-        previewer = conf.file_previewer({}),
-        sorter = conf.generic_sorter({}),
-    }):find()
+  require("telescope.pickers")
+    .new({}, {
+      prompt_title = "Harpoon",
+      finder = require("telescope.finders").new_table {
+        results = file_paths,
+      },
+      previewer = conf.file_previewer {},
+      sorter = conf.generic_sorter {},
+    })
+    :find()
 end
 -- key maps
-map("n", "hh", function() toggle_telescope(require("harpoon"):list()) end,
-    { desc = "Open harpoon window" })
-map("n", "ha", function() require("harpoon"):list():add() end)
-map("n", "hp", function() require("harpoon"):list():prev() end)
-map("n", "hn", function() require("harpoon"):list():next() end)
+map("n", "hh", function()
+  toggle_telescope(require("harpoon"):list())
+end, { desc = "Open harpoon window" })
+map("n", "ha", function()
+  require("harpoon"):list():add()
+end)
+map("n", "hp", function()
+  require("harpoon"):list():prev()
+end)
+map("n", "hn", function()
+  require("harpoon"):list():next()
+end)

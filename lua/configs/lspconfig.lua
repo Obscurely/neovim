@@ -9,6 +9,7 @@ vim.lsp.inlay_hint.enable(true)
 -- setup lsp servers
 local servers = {
   "cssls",
+  "eslint",
   "clangd",
   "ts_ls",
   "csharp_ls",
@@ -82,6 +83,17 @@ lspconfig["html"].setup {
     provideFormatter = false,
   },
 }
+
+lspconfig["eslint"].setup({
+    on_attach = function(_, bufnr)
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        command = "EslintFixAll",
+      })
+    end,
+	on_init = nvlsp.on_init,
+	capabilities = nvlsp.capabilities,
+  })
 
 lspconfig["htmx"].setup {
   on_attach = nvlsp.on_attach,

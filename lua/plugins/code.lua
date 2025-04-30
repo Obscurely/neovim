@@ -10,7 +10,7 @@ return {
   -- linters
   {
     "mfussenegger/nvim-lint",
-    ft = { "python", "c", "cpp", "markdown", "sh", "bash", "nix", "yaml", "terraform", "hcl", "dockerfile", "html" },
+    ft = { "python", "c", "cpp", "markdown", "sh", "bash", "nix", "yaml", "terraform", "hcl", "dockerfile", "html", "javascript", "typescript" },
     config = function()
       require "configs.lint"
     end,
@@ -45,7 +45,7 @@ return {
   -- debugging
   {
     "mfussenegger/nvim-dap",
-    ft = { "rust", "cpp", "python", "csharp" },
+    ft = { "rust", "cpp", "python", "csharp", "typescript", "javascript" },
     config = function()
       require "configs.dap"
     end,
@@ -53,7 +53,7 @@ return {
 
   {
     "rcarriga/nvim-dap-ui",
-    ft = { "rust", "cpp", "python", "csharp" },
+    ft = { "rust", "cpp", "python", "csharp", "typescript", "javascript" },
     dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
     config = function()
       require "configs.dapui"

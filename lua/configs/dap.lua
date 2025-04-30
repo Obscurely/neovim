@@ -22,6 +22,16 @@ dap.adapters.coreclr = {
   args = { "--interpreter=vscode" },
 }
 
+require("dap").adapters["pwa-node"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = {
+    command = "js-debug",
+    args = {"${port}"},
+  }
+}
+
 -- cpp
 dap.configurations.cpp = {
   {
@@ -82,6 +92,31 @@ dap.configurations.cs = {
     program = function()
       return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
     end,
+  },
+}
+
+-- javascript
+require("dap").configurations.javascript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+	skipFiles = {"<node_internals>/**"},
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+  },
+}
+
+require("dap").configurations.typescript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+	skipFiles = {"<node_internals>/**"},
+    program = "${file}",
+	preLaunchTask = "tsc: build - tsconfig.json",
+    cwd = "${workspaceFolder}",
+	outFiles = {"${workspaceFolder}/**/*.js"},
   },
 }
 
