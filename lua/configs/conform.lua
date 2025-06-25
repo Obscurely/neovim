@@ -1,3 +1,12 @@
+local function has_prettier_config()
+  local root = vim.fn.getcwd()
+  local config_path = root .. "/prettier.config.mjs"
+  return vim.fn.filereadable(config_path) == 1
+end
+
+-- Determine which formatter to use based on prettier config
+local prettier_formatter = has_prettier_config() and "prettier" or "prettierd"
+
 local options = {
   formatters_by_ft = {
     lua = { "stylua" },
@@ -8,17 +17,17 @@ local options = {
     c_sharp = { "uncrustify" },
     java = { "uncrustify" },
     rust = { "rustfmt", lsp_format = "fallback" },
-    -- prettierd
-    javascript = { "prettierd" },
-    typescript = { "prettierd" },
-    javascriptreact = { "prettierd" },
-    typescriptreact = { "prettierd" },
-    json = { "prettierd" },
-    markdown = { "prettierd" },
-    html = { "prettierd" },
-    css = { "prettierd" },
-    scss = { "prettierd" },
-    graphql = { "prettierd" },
+    -- prettier/prettierd
+    javascript = { prettier_formatter },
+    typescript = { prettier_formatter },
+    javascriptreact = { prettier_formatter },
+    typescriptreact = { prettier_formatter },
+    json = { prettier_formatter },
+    markdown = { prettier_formatter },
+    html = { prettier_formatter },
+    css = { prettier_formatter },
+    scss = { prettier_formatter },
+    graphql = { prettier_formatter },
     -- rest
     toml = { "taplo" },
     sh = { "shfmt" },
