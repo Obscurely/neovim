@@ -61,6 +61,13 @@ map("n", "<leader>gc", ":Gitsigns diffthis<CR>", { desc = "Show git differences"
 map("n", "<leader>lh", ":Huefy<CR>", { desc = "Open huefy menu" })
 map("n", "<leader>ls", ":Shades<CR>", { desc = "Open shades menu" })
 
+-- Leap
+map({'n', 'x', 'o'}, 's', '<Plug>(leap)')
+map('n',             'S', '<Plug>(leap-from-window)')
+
+-- undo
+map("n", "<leader>u", ":Telescope undo<CR>", { desc = "Open undo history" })
+
 -- Harpoon
 -- basic telescope configuration
 local conf = require("telescope.config").values
@@ -94,3 +101,74 @@ end)
 map("n", "hn", function()
   require("harpoon"):list():next()
 end)
+
+-- Delete current file from harpoon
+map("n", "hd", function()
+  require("harpoon"):list():remove()
+end, { desc = "Remove current file from harpoon" })
+
+-- Interactive delete via telescope
+map("n", "hD", function()
+  local harpoon = require "harpoon"
+  local list = harpoon:list()
+
+  if #list.items == 0 then
+    print "Harpoon list is empty"
+    return
+  end
+
+  local file_paths = {}
+  for _, item in ipairs(list.items) do
+    table.insert(file_paths, item.value)
+  end
+
+  require("telescope.pickers")
+    .new({}, {
+      prompt_title = "Delete from Harpoon",
+      finder = require("telescope.finders").new_table {
+        results = file_paths,
+      },
+      previewer = conf.file_previewer {},
+      sorter = conf.generic_sorter {},
+      attach_mappings = function(prompt_bufnr, map_telescope)
+        local actions = require "telescope.actions"
+        local action_state = require "telescope.actions.state"
+
+        map_telescope("i", "<CR>", function()
+          local selection = action_state.get_selected_entry()
+          actions.close(prompt_bufnr)
+
+          -- Find and remove the selected item
+          for i, item in ipairs(list.items) do
+            if item.value == selection.value then
+              list:remove_at(i)
+              print("Removed " .. selection.value .. " from Harpoon")
+              break
+            end
+          end
+        end)
+
+        return true
+      end,
+    })
+    :find()
+end, { desc = "Interactive delete from harpoon via telescope" })
+
+-- Clear all files from harpoon
+map("n", "hc", function()
+  local harpoon = require "harpoon"
+  local list = harpoon:list()
+
+  if #list.items == 0 then
+    print "Harpoon list is already empty"
+    return
+  end
+
+  -- Confirm before clearing
+  vim.ui.input({ prompt = "Clear all harpoon items? (y/N): " }, function(input)
+    if input and (input:lower() == "y" or input:lower() == "yes") then
+      list:clear()
+      print "Cleared all items from Harpoon"
+    end
+  end)
+end, { desc = "Clear all files from harpoon" })

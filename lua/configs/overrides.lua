@@ -43,8 +43,8 @@ M.cmp = {
     { name = "buffer" },
     { name = "nvim_lsp" },
     { name = "path" },
-    { name = "codeium" },
     { name = "codecompanion" },
+	{ name = 'minuet' },
   },
 }
 

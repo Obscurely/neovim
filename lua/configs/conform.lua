@@ -13,7 +13,7 @@ local options = {
     go = { "gofumpt" },
     python = { "ruff_fix", "ruff_organize_imports", "ruff_format" },
     c = { "uncrustify" },
-    cpp = { "uncrustify" },
+    cpp = { "clang-format" },
     c_sharp = { "uncrustify" },
     java = { "uncrustify" },
     rust = { "rustfmt", lsp_format = "fallback" },

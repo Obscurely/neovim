@@ -1,12 +1,10 @@
 -- load defaults i.e lua_lsp
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require "lspconfig"
-
 -- enable lsp inlay hints
 vim.lsp.inlay_hint.enable(true)
 
--- setup lsp servers
+-- setup lsp servers in specific order
 local servers = {
   "cssls",
   "eslint",
@@ -29,110 +27,66 @@ local servers = {
   "dockerls",
   "arduino_language_server",
 }
-local nvlsp = require "nvchad.configs.lspconfig"
 
--- lsps with default config
+-- Enable servers with default config in order
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
+  vim.lsp.enable(lsp)
 end
 
--- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
---   on_attach = nvlsp.on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
-
 -- Lua language server config
-lspconfig["lua_ls"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+vim.lsp.config("lua_ls", {
   settings = {
     Lua = {
       runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
         version = "LuaJIT",
       },
       diagnostics = {
-        -- Get the language server to recognize the `vim` global
         globals = { "vim" },
       },
       workspace = {
-        -- Make the server aware of Neovim runtime files
         library = vim.api.nvim_get_runtime_file("", true),
       },
-      -- Do not send telemetry data containing a randomized but unique identifier
       telemetry = {
         enable = false,
       },
     },
   },
-}
+})
+vim.lsp.enable "lua_ls"
 
 -- HTML (doing both here because I don't want htmx or tailwindcss loading before html)
-lspconfig["html"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
+vim.lsp.config("html", {
   init_options = {
     provideFormatter = false,
   },
-}
+})
+vim.lsp.enable "html"
 
-lspconfig["eslint"].setup({
-    on_attach = function(_, bufnr)
+-- ESLint auto-fix on save
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "eslint" then
       vim.api.nvim_create_autocmd("BufWritePre", {
-        buffer = bufnr,
+        buffer = args.buf,
         command = "EslintFixAll",
       })
-    end,
-	on_init = nvlsp.on_init,
-	capabilities = nvlsp.capabilities,
-  })
+    end
+  end,
+})
 
-lspconfig["htmx"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-}
+vim.lsp.config("htmx", {})
+vim.lsp.enable "htmx"
 
-lspconfig["tailwindcss"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-}
+vim.lsp.config("tailwindcss", {})
+vim.lsp.enable "tailwindcss"
 
-lspconfig["emmet_ls"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  capabilities = nvlsp.capabilities,
-}
+vim.lsp.config("emmet_ls", {})
+vim.lsp.enable "emmet_ls"
 
 -- Ansible
-lspconfig["ansiblels"].setup {
-  on_attach = nvlsp.on_attach,
-  on_init = nvlsp.on_init,
-  filetypes = { "yaml", "yml" },
-  capabilities = nvlsp.capabilities,
-  root_dir = function(fname)
-    local root_files = {
-      "hosts",
-    }
-
-    -- Check for the 'role' directory
-    local is_role_directory = vim.fn.isdirectory "roles" == 1
-
-    if is_role_directory then
-      table.insert(root_files, "roles")
-    end
-
-    return lspconfig.util.root_pattern(unpack(root_files))(fname)
-      or lspconfig.util.find_git_ancestor(fname)
-      or vim.fn.getcwd()
-  end,
-}
+-- vim.lsp.config("ansiblels", {
+--   filetypes = { "yaml", "yml" },
+--   root_markers = { "hosts", "roles" },
+-- })
+-- vim.lsp.enable "ansiblels"

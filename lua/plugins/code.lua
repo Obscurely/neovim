@@ -10,7 +10,22 @@ return {
   -- linters
   {
     "mfussenegger/nvim-lint",
-    ft = { "python", "c", "cpp", "markdown", "sh", "bash", "nix", "yaml", "terraform", "hcl", "dockerfile", "html", "javascript", "typescript" },
+    ft = {
+      "python",
+      "c",
+      "cpp",
+      "markdown",
+      "sh",
+      "bash",
+      "nix",
+      "yaml",
+      "terraform",
+      "hcl",
+      "dockerfile",
+      "html",
+      "javascript",
+      "typescript",
+    },
     config = function()
       require "configs.lint"
     end,
@@ -108,24 +123,6 @@ return {
     ft = { "html" },
   },
 
-  -- AI Completion
-  {
-    "Exafunction/codeium.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-    },
-    event = { "InsertEnter" },
-    config = function()
-      require("configs.codeium").setup()
-    end,
-  },
-
-  {
-    "github/copilot.vim",
-    event = { "InsertEnter" },
-  },
-
   -- LLM Gen
   -- local
   {
@@ -145,6 +142,14 @@ return {
     cmd = { "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
     config = function()
       require("configs.codecompanion").setup()
+    end,
+  },
+  --- copilot like completions
+  {
+    "milanglacier/minuet-ai.nvim",
+    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+    config = function()
+      require("configs.minuet").setup()
     end,
   },
 }
