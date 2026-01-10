@@ -9,11 +9,20 @@ M.setup = function()
     virtualtext = {
       auto_trigger_ft = {},
       keymap = {
-        -- accept whole completion
-        accept = "<A-A>",
-        -- accept one line
-        accept_line = "<C-a>",
+        -- disable mappings since I don't need them and only enable accept and next
+        accept = "<C-a>",
+        accept_line = nil,
+        accept_n_lines = nil,
+        prev = nil,
+        next = "<C-x>",
+        dismiss = nil,
       },
+    },
+    cmp = {
+      enable_auto_complete = false,
+    },
+    blink = {
+      enable_auto_complete = false,
     },
     provider = "gemini",
     provider_options = {

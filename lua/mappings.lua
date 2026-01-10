@@ -61,9 +61,13 @@ map("n", "<leader>gc", ":Gitsigns diffthis<CR>", { desc = "Show git differences"
 map("n", "<leader>lh", ":Huefy<CR>", { desc = "Open huefy menu" })
 map("n", "<leader>ls", ":Shades<CR>", { desc = "Open shades menu" })
 
+-- Minuet Enable
+map("n", "<leader>mm", ":Minuet virtualtext enable<CR>", { desc = "Enable Minuet via Virtualtext" })
+map("n", "<leader>md", ":Minuet virtualtext disable<CR>", { desc = "Disable Minuet via Virtualtext" })
+
 -- Leap
-map({'n', 'x', 'o'}, 's', '<Plug>(leap)')
-map('n',             'S', '<Plug>(leap-from-window)')
+map({ "n", "x", "o" }, "s", "<Plug>(leap)")
+map("n", "S", "<Plug>(leap-from-window)")
 
 -- undo
 map("n", "<leader>u", ":Telescope undo<CR>", { desc = "Open undo history" })

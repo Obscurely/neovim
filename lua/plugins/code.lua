@@ -147,7 +147,7 @@ return {
   --- copilot like completions
   {
     "milanglacier/minuet-ai.nvim",
-    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+    cmd = { "Minuet" },
     config = function()
       require("configs.minuet").setup()
     end,

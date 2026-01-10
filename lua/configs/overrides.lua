@@ -44,7 +44,6 @@ M.cmp = {
     { name = "nvim_lsp" },
     { name = "path" },
     { name = "codecompanion" },
-	{ name = 'minuet' },
   },
 }
 
