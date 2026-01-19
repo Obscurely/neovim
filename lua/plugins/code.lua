@@ -110,19 +110,6 @@ return {
     end,
   },
 
-  -- tailwindcss tooling
-  {
-    "luckasRanarison/tailwind-tools.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    cond = function()
-      return vim.fn.filereadable(vim.fn.getcwd() .. "/tailwind.config.js") > 0
-    end,
-    config = function()
-      require("configs.tailwindtools").setup()
-    end,
-    ft = { "html" },
-  },
-
   -- LLM Gen
   -- using gemini or claude
   {
