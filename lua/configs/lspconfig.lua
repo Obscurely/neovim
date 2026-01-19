@@ -69,7 +69,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client and client.name == "eslint" then
       vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = args.buf,
-        command = "EslintFixAll",
+        callback = function()
+          vim.lsp.buf.execute_command({
+            command = "eslint.applyAllFixes",
+            arguments = {
+              {
+                uri = vim.uri_from_bufnr(args.buf),
+                version = vim.lsp.util.buf_versions[args.buf],
+              },
+            },
+          })
+        end,
       })
     end
   end,
@@ -83,10 +93,3 @@ vim.lsp.enable "tailwindcss"
 
 vim.lsp.config("emmet_ls", {})
 vim.lsp.enable "emmet_ls"
-
--- Ansible
--- vim.lsp.config("ansiblels", {
---   filetypes = { "yaml", "yml" },
---   root_markers = { "hosts", "roles" },
--- })
--- vim.lsp.enable "ansiblels"

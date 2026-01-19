@@ -47,8 +47,6 @@ map("n", "<leader>gg", ":CodeCompanionChat<CR>", { desc = "Open CodeCompanion ch
 map("n", "<leader>ga", ":CodeCompanionActions<CR>", { desc = "Open CodeCompanion actions" })
 map("v", "<leader>ga", ":CodeCompanionActions<CR>", { desc = "Open CodeCompanion actions" })
 map("n", "<leader>gq", ":CodeCompanionCmd", { desc = "Start CodeCompanion cmd" })
-map("n", "<leader>gm", ":Gen<CR>", { desc = "Open gen.nvim menu" })
-map("v", "<leader>gm", ":Gen<CR>", { desc = "Open gen.nvim menu" })
 
 -- Gitsigns
 map("n", "<leader>gh", ":Gitsigns preview_hunk<CR>", { desc = "View git diffs in a virtual window" })

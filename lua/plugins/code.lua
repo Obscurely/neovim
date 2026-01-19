@@ -124,15 +124,7 @@ return {
   },
 
   -- LLM Gen
-  -- local
-  {
-    "David-Kunz/gen.nvim",
-    cmd = { "Gen" },
-    config = function()
-      require("configs.gen").setup()
-    end,
-  },
-  -- using cluade
+  -- using gemini or claude
   {
     "olimorris/codecompanion.nvim",
     dependencies = {
