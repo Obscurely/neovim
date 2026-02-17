@@ -15,6 +15,35 @@ local function is_github_action()
   return filepath:match "%.github/workflows/.+%.yaml$" ~= nil
 end
 
+-- Helper: Check whether the current file is an Ansible file
+local function is_ansible_file()
+  local filepath = vim.fn.expand "%:p"
+  local filename = vim.fn.expand "%:t"
+
+  -- Check for common Ansible file patterns
+  if
+    filepath:match "/playbooks/"
+    or filepath:match "/roles/"
+    or filepath:match "/tasks/"
+    or filepath:match "/handlers/"
+    or filepath:match "/vars/"
+    or filename:match "^playbook%.ya?ml$"
+    or filename:match "^site%.ya?ml$"
+  then
+    return true
+  end
+
+  -- Check file content for Ansible indicators
+  local lines = vim.api.nvim_buf_get_lines(0, 0, 50, false)
+  for _, line in ipairs(lines) do
+    if line:match "^%s*%-?%s*hosts:" or line:match "^%s*%-?%s*tasks:" or line:match "^%s*%-?%s*roles:" then
+      return true
+    end
+  end
+
+  return false
+end
+
 lint.linters_by_ft = {
   python = { "ruff", "bandit" },
   c = { "cppcheck" },
@@ -38,6 +67,15 @@ end
 -- Add conditional logic for actionlint (github actions)
 if is_github_action() then
   lint.linters_by_ft.yaml = { "yamllint", "actionlint" }
+else
+  lint.linters_by_ft.yaml = { "yamllint" }
+end
+
+-- Add conditional logic for actionlint (github actions)
+if is_github_action() then
+  lint.linters_by_ft.yaml = { "yamllint", "actionlint" }
+elseif is_ansible_file() then
+  lint.linters_by_ft.yaml = { "yamllint", "ansible_lint" }
 else
   lint.linters_by_ft.yaml = { "yamllint" }
 end

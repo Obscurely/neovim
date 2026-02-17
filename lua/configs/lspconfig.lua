@@ -70,7 +70,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.api.nvim_create_autocmd("BufWritePre", {
         buffer = args.buf,
         callback = function()
-          vim.lsp.buf.execute_command({
+          vim.lsp.buf.execute_command {
             command = "eslint.applyAllFixes",
             arguments = {
               {
@@ -78,7 +78,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 version = vim.lsp.util.buf_versions[args.buf],
               },
             },
-          })
+          }
         end,
       })
     end
@@ -93,3 +93,38 @@ vim.lsp.enable "tailwindcss"
 
 vim.lsp.config("emmet_ls", {})
 vim.lsp.enable "emmet_ls"
+
+-- YAML language server with Ansible schemas
+vim.lsp.config("yamlls", {
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json"] = {
+          "playbooks/*.yml",
+          "playbooks/*.yaml",
+          "playbook.yml",
+          "playbook.yaml",
+          "**/ansible/**/*.yml",
+          "**/ansible/**/*.yaml",
+          "**/playbooks/**/*.yml",
+          "**/playbooks/**/*.yaml",
+        },
+        ["https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/tasks.json"] = {
+          "**/tasks/**/*.yml",
+          "**/tasks/**/*.yaml",
+        },
+      },
+      customTags = {
+        "!vault",
+        "!encrypted/pkcs1-oaep scalar",
+        "!vault-encrypted scalar",
+      },
+      validate = true,
+      hover = true,
+      completion = true,
+      format = {
+        enable = true,
+      },
+    },
+  },
+})

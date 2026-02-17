@@ -27,7 +27,7 @@ M.setup = function()
     provider = "gemini",
     provider_options = {
       gemini = {
-        model = "gemini-2.0-flash",
+        model = "gemini-2.5-flash",
         stream = true,
         api_key = function()
           return api_key

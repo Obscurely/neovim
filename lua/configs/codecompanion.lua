@@ -28,7 +28,7 @@ M.setup = function()
                 default = false,
               },
               extended_thinking = {
-                default = false,
+                default = true,
               },
             },
           })

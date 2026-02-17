@@ -8,6 +8,11 @@ end
 local prettier_formatter = has_prettier_config() and "prettier" or "prettierd"
 
 local options = {
+  formatters = {
+    yamlfmt = {
+      prepend_args = { "-formatter", "include_document_start=true,max_line_length=80" },
+    },
+  },
   formatters_by_ft = {
     lua = { "stylua" },
     go = { "gofumpt" },
