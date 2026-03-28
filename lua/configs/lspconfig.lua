@@ -128,3 +128,23 @@ vim.lsp.config("yamlls", {
     },
   },
 })
+
+-- Jinja LSP configuration
+vim.lsp.config("jinja_lsp", {
+  filetypes = { "jinja", "yaml", "yaml.ansible" },
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+      if result and result.diagnostics then
+        local new_diagnostics = {}
+        for _, d in ipairs(result.diagnostics) do
+          if not string.find(d.message, "Undefined variable") then
+            table.insert(new_diagnostics, d)
+          end
+        end
+        result.diagnostics = new_diagnostics
+      end
+      vim.lsp.handlers["textDocument/publishDiagnostics"](err, result, ctx, config)
+    end,
+  },
+})
+vim.lsp.enable "jinja_lsp"

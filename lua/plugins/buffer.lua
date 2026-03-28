@@ -1,7 +1,7 @@
 return {
   -- navigate fast through the buffer
   {
-    "ggandor/leap.nvim",
+    "https://codeberg.org/andyg/leap.nvim",
     event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
   },
 
