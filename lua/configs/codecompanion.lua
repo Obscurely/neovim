@@ -43,7 +43,52 @@ M.setup = function()
             },
             schema = {
               model = {
+                default = "minimax/minimax-m2.7:exacto",
+              },
+              -- This correctly sends the object payload OpenRouter expects
+              reasoning = {
+                mapping = "parameters",
+                default = {
+                  enabled = true,
+                  effort = "high",
+                },
+              },
+            },
+            -- This intercepts the response and maps the reasoning tokens to the UI
+            handlers = {
+              parse_message_meta = function(_, data)
+                local extra = data.extra
+                -- Check for both 'reasoning' (OpenRouter) and 'reasoning_content' (DeepSeek native) just to be safe
+                local reasoning_text = extra and (extra.reasoning or extra.reasoning_content)
+
+                if reasoning_text then
+                  data.output.reasoning = { content = reasoning_text }
+                  if data.output.content == "" then
+                    data.output.content = nil
+                  end
+                end
+                return data
+              end,
+            },
+          })
+        end,
+		direct = function()
+          return require("codecompanion.adapters").extend("openai_compatible", {
+            formatted_name = "Direct",
+            env = {
+              url = "https://openrouter.ai/api/v1",
+              api_key = "cmd:cat ~/.openrouter/api.key",
+              chat_url = "/chat/completions",
+            },
+            schema = {
+              model = {
                 default = "deepseek/deepseek-v3.2",
+              },
+			  temperature = {
+                default = 0.1,
+              },
+              top_p = {
+                default = 0.1,
               },
               -- This correctly sends the object payload OpenRouter expects
               reasoning = {

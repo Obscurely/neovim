@@ -64,8 +64,8 @@ map("n", "<leader>mm", ":Minuet virtualtext enable<CR>", { desc = "Enable Minuet
 map("n", "<leader>md", ":Minuet virtualtext disable<CR>", { desc = "Disable Minuet via Virtualtext" })
 
 -- Leap
-map({ "n", "x", "o" }, "s", "<Plug>(leap)")
-map("n", "S", "<Plug>(leap-from-window)")
+map({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
+map("n", "S", "<Plug>(leap-backward)")
 
 -- undo
 map("n", "<leader>u", ":Telescope undo<CR>", { desc = "Open undo history" })

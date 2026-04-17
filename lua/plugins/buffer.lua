@@ -6,13 +6,13 @@ return {
   },
 
   -- add smooth scrolling to neovim ()
-  {
-    "karb94/neoscroll.nvim",
-    event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
-    config = function()
-      require("configs.neoscroll").setup()
-    end,
-  },
+  -- {
+  --   "karb94/neoscroll.nvim",
+  --   event = { "BufNewFile", "BufReadPre", "FilterReadPre" },
+  --   config = function()
+  --     require("configs.neoscroll").setup()
+  --   end,
+  -- }, 
 
   -- Rainbow parantheses and other delimiters
   { "HiPhish/rainbow-delimiters.nvim", event = { "BufNewFile", "BufReadPre", "FilterReadPre" } },
@@ -31,7 +31,7 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
       },
     },
-	cmd = { "Telescope undo" },
+    cmd = { "Telescope undo" },
     config = function(_, opts)
       require("telescope").setup(opts)
       require("telescope").load_extension "undo"
