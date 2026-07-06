@@ -1,6 +1,7 @@
 local history = {}
 local last_response_buf = nil
 local current_chat_file = nil
+local active_job = nil
 
 local system_prompt = [[
 You are a senior software, cloud and systems engineer acting as a peer reviewer and advisor. You have no tools - no web search, no file access, no shell commands. You can only read the context provided and respond.
@@ -28,6 +29,21 @@ local function get_chat_dir()
 	return dir
 end
 
+-- build a flat prompt string from structured history
+local function build_prompt_from_history()
+	local parts = {}
+	for _, msg in ipairs(history) do
+		if msg.role == "context" then
+			table.insert(parts, msg.content)
+		elseif msg.role == "user" then
+			table.insert(parts, "User: " .. msg.content)
+		elseif msg.role == "assistant" then
+			table.insert(parts, "Assistant: " .. msg.content)
+		end
+	end
+	return table.concat(parts, "\n\n")
+end
+
 local function save_chat()
 	if #history == 0 then
 		return
@@ -42,8 +58,8 @@ local function save_chat()
 		local timestamp = os.date("%Y-%m-%d_%H-%M-%S")
 		local hint = ""
 		for _, msg in ipairs(history) do
-			if msg:match("^User: ") then
-				hint = msg:match("^User: (.-)$"):sub(1, 40):gsub("[^%w ]", ""):gsub("%s+", "-")
+			if msg.role == "user" then
+				hint = msg.content:sub(1, 40):gsub("[^%w ]", ""):gsub("%s+", "-")
 				break
 			end
 		end
@@ -57,13 +73,20 @@ local function save_chat()
 	end
 end
 
--- Auto-save when starting a new conversation (if previous exists)
+-- save current conversation, close buffer, reset state
+-- clear history before buf_delete so BufWipeout autocmd doesn't double-save
 local original_reset = function()
+	if active_job then
+		vim.fn.jobstop(active_job)
+		active_job = nil
+	end
+	if #history > 0 then
+		save_chat()
+	end
+	-- clear history before deleting buffer so BufWipeout doesn't double-save
+	history = {}
 	if last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf) then
 		vim.api.nvim_buf_delete(last_response_buf, { force = true })
-	elseif #history > 0 then
-		save_chat()
-		history = {}
 	end
 	last_response_buf = nil
 	current_chat_file = nil
@@ -79,17 +102,135 @@ local function get_project_instructions()
 	return ""
 end
 
--- main claude interaction function
-local function send_to_claude(context, question)
+-- build the claude command args
+-- --tools "" explicitly disables all tools (no file access, no shell, no web search)
+local function build_cmd(prompt)
+	return {
+		"claude",
+		"--print",
+		"--tools",
+		"",
+		"--model",
+		"claude-opus-4-6",
+		"--output-format",
+		"stream-json",
+		"--verbose",
+		"--include-partial-messages",
+		"--append-system-prompt",
+		system_prompt .. get_project_instructions(),
+		prompt,
+	}
+end
+
+-- stream claude response into a buffer, prefix_lines are prepended to the display (for follow-ups)
+local function stream_response(buf, cmd, prefix_lines, on_done)
+	local full_response = ""
+	local thinking_text = ""
+	local is_thinking = false
+	local partial_line = ""
+
+	local function update_buffer()
+		if not vim.api.nvim_buf_is_valid(buf) then
+			return
+		end
+		local display = {}
+		if prefix_lines then
+			vim.list_extend(display, prefix_lines)
+		end
+		if is_thinking and thinking_text ~= "" then
+			table.insert(display, "[thinking]")
+			for _, line in ipairs(vim.split(thinking_text, "\n")) do
+				table.insert(display, "  " .. line)
+			end
+			table.insert(display, "")
+		end
+		for _, line in ipairs(vim.split(full_response, "\n")) do
+			table.insert(display, line)
+		end
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, display)
+		local win = vim.fn.bufwinid(buf)
+		if win ~= -1 then
+			vim.api.nvim_win_set_cursor(win, { #display, 0 })
+		end
+	end
+
+	active_job = vim.fn.jobstart(cmd, {
+		stdout_buffered = false,
+		stderr_buffered = true,
+		on_stderr = function(_, data, _)
+			local msg = table.concat(data, "\n")
+			if msg ~= "" then
+				vim.schedule(function()
+					if vim.api.nvim_buf_is_valid(buf) then
+						vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Error: " .. msg })
+					end
+				end)
+			end
+		end,
+		on_stdout = function(_, data, _)
+			for i, chunk in ipairs(data) do
+				local line
+				if i == 1 then
+					line = partial_line .. chunk
+					partial_line = ""
+				else
+					line = chunk
+				end
+
+				if i == #data then
+					partial_line = line
+				elseif line ~= "" then
+					local ok, event = pcall(vim.fn.json_decode, line)
+					if ok and event and event.type == "stream_event" then
+						local delta = event.event and event.event.delta
+						if delta then
+							if delta.type == "thinking_delta" then
+								is_thinking = true
+								thinking_text = thinking_text .. (delta.thinking or "")
+								vim.schedule(update_buffer)
+							elseif delta.type == "text_delta" then
+								if is_thinking then
+									is_thinking = false
+								end
+								full_response = full_response .. (delta.text or "")
+								vim.schedule(update_buffer)
+							end
+						end
+					end
+				end
+			end
+		end,
+		on_exit = function(_, exit_code, _)
+			vim.schedule(function()
+				active_job = nil
+				if exit_code == 0 and full_response ~= "" then
+					is_thinking = false
+					thinking_text = ""
+					update_buffer()
+					on_done(full_response)
+				elseif vim.api.nvim_buf_is_valid(buf) then
+					if exit_code ~= 0 then
+						local err_lines = prefix_lines and vim.list_extend({}, prefix_lines) or {}
+						table.insert(err_lines, "Error: request failed")
+						vim.api.nvim_buf_set_lines(buf, 0, -1, false, err_lines)
+					end
+				end
+			end)
+		end,
+	})
+end
+
+-- setup a response buffer with common options
+local function create_response_buf()
 	vim.cmd("vsplit")
-	local response_buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_win_set_buf(0, response_buf)
-	vim.bo[response_buf].filetype = "markdown"
-	vim.bo[response_buf].buftype = "nofile"
-	vim.bo[response_buf].bufhidden = "wipe"
+	local buf = vim.api.nvim_create_buf(false, true)
+	vim.api.nvim_win_set_buf(0, buf)
+	vim.bo[buf].filetype = "markdown"
+	vim.bo[buf].buftype = "nofile"
+	vim.bo[buf].bufhidden = "wipe"
 
 	vim.api.nvim_create_autocmd("BufWipeout", {
-		buffer = response_buf,
+		buffer = buf,
 		callback = function()
 			if #history > 0 then
 				save_chat()
@@ -100,38 +241,34 @@ local function send_to_claude(context, question)
 		end,
 	})
 
-	vim.api.nvim_buf_set_lines(response_buf, 0, -1, false, { "Thinking..." })
-	table.insert(history, "User: " .. question)
+	return buf
+end
 
-	local prompt = context .. get_project_instructions() .. "\n\n" .. question
+-- main claude interaction function
+local function send_to_claude(context, question)
+	local response_buf = create_response_buf()
+	vim.api.nvim_buf_set_lines(response_buf, 0, -1, false, { "Connecting..." })
 
-	vim.system({
-		"claude",
-		"--print",
-		"--tools",
-		"",
-		"--append-system-prompt",
-		system_prompt,
-		"--model",
-		"claude-opus-4-6",
-		prompt,
-	}, { text = true }, function(result)
-		vim.schedule(function()
-			if result.code == 0 then
-				vim.api.nvim_buf_set_lines(response_buf, 0, -1, false, vim.split(result.stdout, "\n"))
-				table.insert(history, "Assistant: " .. result.stdout)
-				last_response_buf = response_buf
-			else
-				vim.api.nvim_buf_set_lines(response_buf, 0, -1, false, { "Error: " .. (result.stderr or "unknown") })
-			end
-		end)
+	-- store context in history so follow-ups retain it
+	if context ~= "" then
+		table.insert(history, { role = "context", content = context })
+	end
+	table.insert(history, { role = "user", content = question })
+
+	local prompt = build_prompt_from_history()
+
+	stream_response(response_buf, build_cmd(prompt), nil, function(response)
+		table.insert(history, { role = "assistant", content = response })
+		last_response_buf = response_buf
 	end)
 end
 
 -- Ask about current buffer
 vim.keymap.set("n", "<leader>ai", function()
 	original_reset()
-	local context = get_file_content(vim.fn.expand("%:p"))
+	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+	local name = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":~:.")
+	local context = string.format("File: %s\n```\n%s\n```", name, table.concat(lines, "\n"))
 	vim.ui.input({ prompt = "Ask Claude: " }, function(question)
 		if not question or question == "" then
 			return
@@ -206,51 +343,39 @@ vim.keymap.set("n", "<leader>af", function()
 		if not question or question == "" then
 			return
 		end
-		table.insert(history, "User: " .. question)
-		local full_prompt = table.concat(history, "\n\n")
+		table.insert(history, { role = "user", content = question })
+		local full_prompt = build_prompt_from_history()
 
-		if last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf) then
-			local current = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
-			table.insert(current, "")
-			table.insert(current, "---")
-			table.insert(current, "")
-			table.insert(current, "Thinking...")
-			vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, current)
+		if not (last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf)) then
+			return
 		end
 
-		vim.system({
-			"claude",
-			"--print",
-			"--tools",
-			"",
-			"--append-system-prompt",
-			system_prompt,
-			"--model",
-			"claude-opus-4-6",
-			full_prompt,
-		}, { text = true }, function(result)
-			vim.schedule(function()
-				if result.code == 0 then
-					table.insert(history, "Assistant: " .. result.stdout)
-					if last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf) then
-						local lines = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
-						if lines[#lines] == "Thinking..." then
-							table.remove(lines)
-						end
-						for _, line in ipairs(vim.split(result.stdout, "\n")) do
-							table.insert(lines, line)
-						end
-						vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, lines)
-						local win = vim.fn.bufwinid(last_response_buf)
-						if win ~= -1 then
-							vim.api.nvim_win_set_cursor(win, { #lines, 0 })
-						end
-					end
-				end
-			end)
+		local current = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
+		table.insert(current, "")
+		table.insert(current, "---")
+		table.insert(current, "")
+		table.insert(current, "Connecting...")
+		vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, current)
+
+		local prefix_lines = vim.list_extend({}, current)
+		table.remove(prefix_lines)
+
+		stream_response(last_response_buf, build_cmd(full_prompt), prefix_lines, function(response)
+			table.insert(history, { role = "assistant", content = response })
 		end)
 	end)
 end, { desc = "Follow up question" })
+
+-- Cancel in-flight request
+vim.keymap.set("n", "<leader>aq", function()
+	if active_job then
+		vim.fn.jobstop(active_job)
+		active_job = nil
+		vim.notify("Request cancelled")
+	else
+		vim.notify("No active request")
+	end
+end, { desc = "Cancel Claude request" })
 
 -- Browse and load old chats
 local function open_chat_history()
@@ -272,32 +397,27 @@ local function open_chat_history()
 				end
 				local content = file:read("*a")
 				file:close()
-				history = vim.fn.json_decode(content)
-				last_response_buf = nil
 
-				-- Display the loaded conversation
-				vim.cmd("vsplit")
-				last_response_buf = vim.api.nvim_create_buf(false, true)
-				vim.api.nvim_win_set_buf(0, last_response_buf)
-				vim.bo[last_response_buf].filetype = "markdown"
-				vim.bo[last_response_buf].buftype = "nofile"
-				vim.bo[last_response_buf].bufhidden = "wipe"
+				local ok, decoded = pcall(vim.fn.json_decode, content)
+				if not ok then
+					vim.notify("Failed to load chat: corrupted file")
+					return
+				end
+				history = decoded
 
-				vim.api.nvim_create_autocmd("BufWipeout", {
-					buffer = last_response_buf,
-					callback = function()
-						if #history > 0 then
-							save_chat()
-							history = {}
-							last_response_buf = nil
-							current_chat_file = nil
-						end
-					end,
-				})
+				last_response_buf = create_response_buf()
 
 				local display = {}
 				for _, msg in ipairs(history) do
-					for _, line in ipairs(vim.split(msg, "\n")) do
+					local prefix = ""
+					if msg.role == "context" then
+						prefix = "[context]\n"
+					elseif msg.role == "user" then
+						prefix = "User: "
+					elseif msg.role == "assistant" then
+						prefix = ""
+					end
+					for _, line in ipairs(vim.split(prefix .. msg.content, "\n")) do
 						table.insert(display, line)
 					end
 					table.insert(display, "")
