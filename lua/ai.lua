@@ -147,10 +147,11 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 		for _, line in ipairs(vim.split(full_response, "\n")) do
 			table.insert(display, line)
 		end
-		vim.api.nvim_buf_set_lines(buf, 0, -1, false, display)
+		local flat = vim.split(table.concat(display, "\n"), "\r?\n")
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, flat)
 		local win = vim.fn.bufwinid(buf)
 		if win ~= -1 then
-			vim.api.nvim_win_set_cursor(win, { #display, 0 })
+			vim.api.nvim_win_set_cursor(win, { #flat, 0 })
 		end
 	end
 
@@ -162,7 +163,7 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 			if msg ~= "" then
 				vim.schedule(function()
 					if vim.api.nvim_buf_is_valid(buf) then
-						vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Error: " .. msg })
+						vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split("Error: " .. msg, "\r?\n"))
 					end
 				end)
 			end
@@ -204,20 +205,28 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 			vim.schedule(function()
 				active_job = nil
 				if exit_code == 0 and full_response ~= "" then
-					is_thinking = false
-					thinking_text = ""
-					update_buffer()
+					if is_thinking then
+						is_thinking = false
+						thinking_text = ""
+						update_buffer()
+					end
 					on_done(full_response)
 				elseif vim.api.nvim_buf_is_valid(buf) then
 					if exit_code ~= 0 then
 						local err_lines = prefix_lines and vim.list_extend({}, prefix_lines) or {}
 						table.insert(err_lines, "Error: request failed")
-						vim.api.nvim_buf_set_lines(buf, 0, -1, false, err_lines)
+						local flat_err = vim.split(table.concat(err_lines, "\n"), "\r?\n")
+						vim.api.nvim_buf_set_lines(buf, 0, -1, false, flat_err)
 					end
 				end
 			end)
 		end,
 	})
+
+	-- the cli waits for an input for 3 seconds and shows an warning otherwise
+	if active_job > 0 then
+		vim.fn.chanclose(active_job, "stdin")
+	end
 end
 
 -- setup a response buffer with common options
@@ -228,6 +237,7 @@ local function create_response_buf()
 	vim.bo[buf].filetype = "markdown"
 	vim.bo[buf].buftype = "nofile"
 	vim.bo[buf].bufhidden = "wipe"
+	vim.diagnostic.enable(false, { bufnr = buf })
 
 	vim.api.nvim_create_autocmd("BufWipeout", {
 		buffer = buf,
@@ -263,16 +273,59 @@ local function send_to_claude(context, question)
 	end)
 end
 
+-- popup input
+local function float_input(prompt_text, callback)
+	local buf = vim.api.nvim_create_buf(false, true)
+	local width = math.floor(vim.o.columns * 0.7)
+	local height = 8
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		width = width,
+		height = height,
+		row = math.floor((vim.o.lines - height) / 2),
+		col = math.floor((vim.o.columns - width) / 2),
+		style = "minimal",
+		border = "single",
+		title = " " .. prompt_text .. " ",
+		title_pos = "center",
+	})
+
+	vim.bo[buf].buftype = "nofile"
+	vim.bo[buf].filetype = "markdown"
+	vim.diagnostic.enable(false, { bufnr = buf })
+	vim.cmd("startinsert")
+
+	-- Submit with leader-enter
+	vim.keymap.set("n", "<leader><CR>", function()
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+		local text = vim.trim(table.concat(lines, "\n"))
+		vim.api.nvim_win_close(win, true)
+		vim.api.nvim_buf_delete(buf, { force = true })
+		if text ~= "" then
+			callback(text)
+		end
+	end, { buffer = buf })
+
+	-- Cancel with Escape
+	vim.keymap.set("n", "<Esc>", function()
+		vim.api.nvim_win_close(win, true)
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end, { buffer = buf })
+
+	-- Cancel with q
+	vim.keymap.set("n", "q", function()
+		vim.api.nvim_win_close(win, true)
+		vim.api.nvim_buf_delete(buf, { force = true })
+	end, { buffer = buf })
+end
+
 -- Ask about current buffer
 vim.keymap.set("n", "<leader>ai", function()
 	original_reset()
 	local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
 	local name = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":~:.")
 	local context = string.format("File: %s\n```\n%s\n```", name, table.concat(lines, "\n"))
-	vim.ui.input({ prompt = "Ask Claude: " }, function(question)
-		if not question or question == "" then
-			return
-		end
+	float_input("Ask Claude (buffer)", function(question)
 		send_to_claude(context, question)
 	end)
 end, { desc = "Ask Claude about current file" })
@@ -286,10 +339,7 @@ vim.keymap.set("v", "<leader>ai", function()
 		local end_pos = vim.fn.getpos("'>")
 		local lines = vim.api.nvim_buf_get_lines(0, start_pos[2] - 1, end_pos[2], false)
 		local context = string.format("Selected code:\n```\n%s\n```", table.concat(lines, "\n"))
-		vim.ui.input({ prompt = "Ask Claude: " }, function(question)
-			if not question or question == "" then
-				return
-			end
+		float_input("Ask Claude (selection)", function(question)
 			send_to_claude(context, question)
 		end)
 	end)
@@ -310,10 +360,7 @@ vim.keymap.set("n", "<leader>aI", function()
 				for _, filepath in ipairs(selected_files) do
 					table.insert(context, get_file_content(filepath))
 				end
-				vim.ui.input({ prompt = "Ask Claude: " }, function(question)
-					if not question or question == "" then
-						return
-					end
+				float_input("Ask Claude (files)", function(question)
 					send_to_claude(table.concat(context, "\n\n"), question)
 				end)
 			end,
@@ -325,10 +372,7 @@ end, { desc = "Pick files and ask Claude" })
 -- Chat without any files
 vim.keymap.set("n", "<leader>ac", function()
 	original_reset()
-	vim.ui.input({ prompt = "Ask Claude: " }, function(question)
-		if not question or question == "" then
-			return
-		end
+	float_input("Ask Claude (chat)", function(question)
 		send_to_claude("", question)
 	end)
 end, { desc = "Chat with Claude (no file)" })
@@ -339,27 +383,20 @@ vim.keymap.set("n", "<leader>af", function()
 		vim.notify("No active conversation")
 		return
 	end
-	vim.ui.input({ prompt = "Follow up: " }, function(question)
-		if not question or question == "" then
-			return
-		end
+	float_input("Follow up", function(question)
 		table.insert(history, { role = "user", content = question })
 		local full_prompt = build_prompt_from_history()
-
 		if not (last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf)) then
 			return
 		end
-
 		local current = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
 		table.insert(current, "")
 		table.insert(current, "---")
 		table.insert(current, "")
 		table.insert(current, "Connecting...")
 		vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, current)
-
 		local prefix_lines = vim.list_extend({}, current)
 		table.remove(prefix_lines)
-
 		stream_response(last_response_buf, build_cmd(full_prompt), prefix_lines, function(response)
 			table.insert(history, { role = "assistant", content = response })
 		end)
@@ -424,7 +461,8 @@ local function open_chat_history()
 					table.insert(display, "---")
 					table.insert(display, "")
 				end
-				vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, display)
+				local flat = vim.split(table.concat(display, "\n"), "\r?\n")
+				vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, flat)
 				vim.api.nvim_win_set_cursor(0, { #display, 0 })
 			end,
 			["ctrl-x"] = function(entries)
