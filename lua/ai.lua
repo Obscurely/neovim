@@ -4,7 +4,7 @@ local current_chat_file = nil
 local active_job = nil
 
 local system_prompt = [[
-You are a senior software, cloud and systems engineer acting as a peer reviewer and advisor. You have no tools - no web search, no file access, no shell commands. You can only read the context provided and respond.
+You are a senior software, cloud and systems engineer acting as a peer reviewer and advisor. You have NO tools - NO web search, NO file access, NO shell commands, NO advisor (you are NOT allowed to call it). You can only read the context provided and respond.
 
 Rules:
 - Be direct and concise. No filler, no hedging, no "great question."
@@ -116,6 +116,10 @@ local function build_cmd(prompt)
 		"stream-json",
 		"--verbose",
 		"--include-partial-messages",
+		"--allowedTools",
+		"none",
+		"--disallowedTools",
+		"Read,Write,Edit,Bash,Glob,Grep,WebFetch,WebSearch,NotebookEdit,TodoWrite,Task,AskUserQuestion,Agent,Artifact,AskUserQuestion,CronCreate,CronDelete,CronList,EnterPlanMode,EnterWorktree,ExitPlanMode,ExitWorktree,ListMcpResourcesTool,LSP,Monitor,PowerShell,PushNotification,ReadMcpResourceTool,RemoteTrigger,ScheduleWakeup,SendMessage,SendUserFile,ShareOnboardingGuide,Skill,TaskCreate,TaskGet,TaskList,TaskOutput,TaskStop,TaskUpdate,ToolSearch,WaitForMcpServers,Workflow",
 		"--append-system-prompt",
 		system_prompt .. get_project_instructions(),
 		prompt,
@@ -276,14 +280,18 @@ end
 -- popup input
 local function float_input(prompt_text, callback)
 	local buf = vim.api.nvim_create_buf(false, true)
-	local width = math.floor(vim.o.columns * 0.7)
+	local width = (last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf))
+			and math.floor(vim.o.columns * 0.4)
+		or math.floor(vim.o.columns * 0.6)
 	local height = 8
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",
 		width = width,
 		height = height,
 		row = math.floor((vim.o.lines - height) / 2),
-		col = math.floor((vim.o.columns - width) / 2),
+		col = (last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf)) and math.floor(
+			(vim.o.columns / 2 - width) / 2
+		) or math.floor((vim.o.columns - width) / 2),
 		style = "minimal",
 		border = "single",
 		title = " " .. prompt_text .. " ",
@@ -390,6 +398,10 @@ vim.keymap.set("n", "<leader>af", function()
 			return
 		end
 		local current = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
+		-- remove trailing empty lines from history display before adding separator
+		while #current > 0 and (current[#current] == "" or current[#current] == "---") do
+			table.remove(current)
+		end
 		table.insert(current, "")
 		table.insert(current, "---")
 		table.insert(current, "")
