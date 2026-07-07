@@ -18,18 +18,57 @@ autocmd("BufReadPost", {
 -- Alacritty integration: opaque background, matching color, zero padding
 vim.api.nvim_create_augroup("AlacrittyIntegration", { clear = true })
 
+local function find_alacritty_socket()
+	local uid = vim.trim(vim.fn.system("id -u"))
+	local sockets = vim.fn.glob("/run/user/" .. uid .. "/Alacritty-*.sock", false, true)
+	if #sockets == 0 then
+		return nil
+	end
+	if #sockets == 1 then
+		return sockets[1]
+	end
+
+	local client_pid = vim.trim(vim.fn.system("tmux display-message -p '#{client_pid}'"))
+	if client_pid == "" then
+		return sockets[1]
+	end
+
+	local pid = tonumber(client_pid)
+	while pid and pid > 1 do
+		for _, sock in ipairs(sockets) do
+			if sock:match("%-" .. pid .. "%.sock$") then
+				return sock
+			end
+		end
+		pid = tonumber(vim.trim(vim.fn.system("ps -p " .. pid .. " -o ppid=")))
+	end
+	return sockets[1]
+end
+
+local alacritty_socket = find_alacritty_socket()
+
+local function alacritty_msg(...)
+	if not alacritty_socket then
+		return
+	end
+	local args = { "alacritty", "msg", "--socket", alacritty_socket }
+	for _, arg in ipairs({ ... }) do
+		table.insert(args, arg)
+	end
+	vim.system(args)
+end
+
 local function apply_alacritty_config()
 	local bg = nil
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
 	if hl.bg then
 		bg = string.format("#%06x", hl.bg)
 	end
-
-	vim.system({ "alacritty", "msg", "config", "window.opacity=1" })
-	vim.system({ "alacritty", "msg", "config", "window.padding.x=0" })
-	vim.system({ "alacritty", "msg", "config", "window.padding.y=0" })
+	alacritty_msg("config", "window.opacity=1")
+	alacritty_msg("config", "window.padding.x=0")
+	alacritty_msg("config", "window.padding.y=0")
 	if bg then
-		vim.system({ "alacritty", "msg", "config", ("colors.primary.background='%s'"):format(bg) })
+		alacritty_msg("config", ("colors.primary.background='%s'"):format(bg))
 	end
 end
 
@@ -50,7 +89,7 @@ autocmd("ColorScheme", {
 autocmd("VimLeavePre", {
 	group = "AlacrittyIntegration",
 	callback = function()
-		vim.system({ "alacritty", "msg", "config", "--reset" })
+		alacritty_msg("config", "--reset")
 	end,
 })
 
