@@ -21,6 +21,8 @@ vim.pack.add({
 	"https://github.com/nvim-lua/plenary.nvim",
 	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
 	"https://github.com/ibhagwan/fzf-lua",
+	-- buffer
+	"https://github.com/shortcuts/no-neck-pain.nvim",
 })
 
 -- Single-line plugin configs that don't warrant their own file

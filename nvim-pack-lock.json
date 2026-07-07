@@ -38,6 +38,10 @@
       "rev": "23e7e9f883d01289ebd90e98025acc860ea26366",
       "src": "https://github.com/danymat/neogen"
     },
+    "no-neck-pain.nvim": {
+      "rev": "0df6659e25401c3f3c40e82f1ddd48714b1a659c",
+      "src": "https://github.com/shortcuts/no-neck-pain.nvim"
+    },
     "nvim-lint": {
       "rev": "a219b2c9e5b4765e5c845aba119dad55806fcaf1",
       "src": "https://github.com/mfussenegger/nvim-lint"

@@ -2,6 +2,7 @@
 require("options")
 require("plugins")
 require("theme")
+require("center")
 require("lsp")
 require("treesitter")
 require("cmp")
