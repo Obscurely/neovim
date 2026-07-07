@@ -7,13 +7,14 @@ require("no-neck-pain").setup({
 		right = {
 			enabled = false,
 		},
-		scratchPad = {
-			enabled = true,
-			fileName = "notes",
-			location = "./.notes/",
-		},
-		bo = {
-			filetype = "md",
+		left = {
+			scratchPad = {
+				enabled = true,
+				pathToFile = "./.notes.md",
+			},
+			bo = {
+				filetype = "markdown",
+			},
 		},
 	},
 })

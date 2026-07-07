@@ -108,3 +108,12 @@ autocmd("LspProgress", {
 		vim.cmd("redrawstatus")
 	end,
 })
+
+-- Disable diagnostics in .notes (side pane of no neck pain)
+autocmd("BufEnter", {
+	callback = function(args)
+		if vim.api.nvim_buf_get_name(args.buf):match("%.notes%.md$") then
+			vim.diagnostic.enable(false, { bufnr = args.buf })
+		end
+	end,
+})
