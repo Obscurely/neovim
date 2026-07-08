@@ -88,4 +88,11 @@ function M.progress()
 	return status
 end
 
+function M.file()
+	if vim.bo.buftype == "terminal" then
+		return "terminal"
+	end
+	return vim.fn.expand("%:~:.")
+end
+
 return M

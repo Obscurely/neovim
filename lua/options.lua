@@ -47,6 +47,7 @@ opt.wrap = true -- continue displaying long lines by going on the next line, wra
 opt.breakindent = true -- on the extra lines from wrapped lines apply the same level of indent
 opt.linebreak = true -- wrap lines at word boundries rather than mid-word
 opt.smoothscroll = true -- on wrapped lines don't skip scroll as if they are just a line
+opt.laststatus = 3 -- keep one single status line that adapts depending on the buffer selected
 opt.spell = false
 opt.spelllang = "en"
 opt.scrolloff = 8
@@ -69,7 +70,7 @@ opt.statusline = table.concat({
 	" %{%v:lua.require'util.statusline'.mode()%}",
 	"%{v:lua.require'util.statusline'.git_branch()} ",
 	"%{v:lua.require'util.statusline'.git_diff()}",
-	" │ %f %m%r",
+	" │ %{v:lua.require'util.statusline'.file()} %m%r",
 	"%=",
 	" %{v:lua.require'util.statusline'.progress()}",
 	"%=",

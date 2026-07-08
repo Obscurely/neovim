@@ -28,6 +28,8 @@ require("onedark").setup({
 		["FloatTitle"] = { bg = "#232A33" },
 		["StatusLine"] = { bg = "#232A33", fg = "#6f737b" },
 		["StatusLineNC"] = { bg = "#1e2430", fg = "#4a4e56" },
+		["StatusLineTerm"] = { bg = "#232A33", fg = "#6f737b" },
+		["StatusLineTermNC"] = { bg = "#1e2430", fg = "#4a4e56" },
 		["MsgArea"] = { fg = "#6f737b" },
 		-- blink
 		["BlinkCmpMenu"] = { bg = "#232A33" },
