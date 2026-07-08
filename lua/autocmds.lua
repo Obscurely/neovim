@@ -110,10 +110,13 @@ autocmd("LspProgress", {
 })
 
 -- Disable diagnostics in .notes (side pane of no neck pain)
-autocmd("BufEnter", {
-	callback = function(args)
-		if vim.api.nvim_buf_get_name(args.buf):match("%.notes%.md$") then
-			vim.diagnostic.enable(false, { bufnr = args.buf })
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = ".notes.md",
+	callback = function()
+		vim.diagnostic.enable(false, { bufnr = 0 })
+		local clients = vim.lsp.get_clients({ bufnr = 0 })
+		for _, client in ipairs(clients) do
+			vim.lsp.buf_detach_client(0, client.id)
 		end
 	end,
 })

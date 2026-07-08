@@ -17,6 +17,10 @@ lint.linters_by_ft = {
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
 	callback = function()
+		if vim.fn.expand("%:t") == ".notes.md" then
+			return
+		end -- don't enable on no neck pain notes
+
 		local filepath = vim.fn.expand("%:p")
 
 		-- Add actionlint for GitHub Actions workflows
