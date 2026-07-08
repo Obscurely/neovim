@@ -119,8 +119,8 @@ local function build_cmd(prompt)
 		"--disable-slash-commands", -- disable slash commands and skills as a result
 		"--no-chrome", -- disable claude in chorme integration just in case
 		"--tools", -- remove all tools available in its list
-		"--safe-mode", -- don't load other sub level stuff
 		"",
+		"--safe-mode", -- don't load other sub level stuff
 		"--settings", -- make sure it's not loading any memories or git instructions
 		'{"autoMemoryEnabled":false,"includeGitInstructions":false}',
 		"--setting-sources", -- don't load any settings
@@ -434,6 +434,56 @@ vim.keymap.set("n", "<leader>af", function()
 		end)
 	end)
 end, { desc = "Follow up question" })
+
+vim.keymap.set("n", "<leader>aF", function()
+	if #history == 0 then
+		vim.notify("No active conversation")
+		return
+	end
+	require("fzf-lua").files({
+		actions = {
+			["default"] = function(entries)
+				local files = {}
+				for _, entry in ipairs(entries) do
+					local path = require("fzf-lua").path.entry_to_file(entry).path
+					table.insert(files, get_file_content(path))
+				end
+				local context = table.concat(files, "\n\n")
+				float_input("Follow up: ", function(question)
+					if not question or question == "" then
+						return
+					end
+					table.insert(history, { role = "context", content = context })
+					table.insert(history, { role = "user", content = question })
+					local full_prompt = build_prompt_from_history()
+
+					if not (last_response_buf and vim.api.nvim_buf_is_valid(last_response_buf)) then
+						return
+					end
+
+					local current = vim.api.nvim_buf_get_lines(last_response_buf, 0, -1, false)
+					-- remove trailing empty lines from history display before adding separator
+					while #current > 0 and (current[#current] == "" or current[#current] == "---") do
+						table.remove(current)
+					end
+					table.insert(current, "")
+					table.insert(current, "---")
+					table.insert(current, "")
+					table.insert(current, "Connecting...")
+					vim.api.nvim_buf_set_lines(last_response_buf, 0, -1, false, current)
+
+					local prefix_lines = vim.list_extend({}, current)
+					table.remove(prefix_lines)
+
+					stream_response(last_response_buf, build_cmd(full_prompt), prefix_lines, function(response)
+						table.insert(history, { role = "assistant", content = response })
+					end)
+				end)
+			end,
+		},
+		fzf_opts = { ["--multi"] = true },
+	})
+end, { desc = "Follow up with files" })
 
 -- Cancel in-flight request
 vim.keymap.set("n", "<leader>aq", function()
