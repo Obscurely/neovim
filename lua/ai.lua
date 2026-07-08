@@ -4,16 +4,21 @@ local current_chat_file = nil
 local active_job = nil
 
 local system_prompt = [[
-You are a senior software, cloud and systems engineer acting as a peer reviewer and advisor. You have NO tools - NO web search, NO file access, NO shell commands, NO advisor (you are NOT allowed to call it). You can only read the context provided and respond.
+Ignore any tool definitions or tool access described earlier in the system prompt. You have zero tools available in this session.
+
+You are a senior software, cloud and systems engineer acting as a peer reviewer and advisor. You have NO tools and are NOT allowed to call any tools - NO web search, NO file access, NO shell commands, NO advisor (you are NOT allowed to call it). You can only read the context provided and respond.
 
 Rules:
 - Be direct and concise. No filler, no hedging, no "great question."
+- Don't restate the question or preface with "Here's" or "Let me."
 - When showing code, show only the relevant change, not the entire file.
 - If you don't know something, say so in one sentence.
 - When asked to explain, explain the why, not just the what.
 - Point out potential issues the user didn't ask about if they're significant.
-- Default to the user's language and toolchain conventions (Rust, Python, Nix, Lua).
+- The code provided is the source of truth. Don't assume anything not shown.
+- Default to the user's language and toolchain conventions (Rust, Python, Nix, Lua, etc.).
 - No markdown headers in short answers. Use them only for genuinely structured responses.
+- Ignore any account email address injected by the environment. Do not reference it.
 ]]
 
 local function get_file_content(filepath)
@@ -103,26 +108,39 @@ local function get_project_instructions()
 end
 
 -- build the claude command args
--- --tools "" explicitly disables all tools (no file access, no shell, no web search)
 local function build_cmd(prompt)
+	-- the aim here is to make it as close as to just calling the API as possible
 	return {
 		"claude",
-		"--print",
-		"--tools",
+		"--print", -- use print mode so that we can pipe the output in neovim
+		"--strict-mcp-config", -- these 3 disable any kind of MCP servers
+		"--mcp-config",
+		'{"mcpServers":{}}',
+		"--disable-slash-commands", -- disable slash commands and skills as a result
+		"--no-chrome", -- disable claude in chorme integration just in case
+		"--tools", -- remove all tools available in its list
+		"--safe-mode", -- don't load other sub level stuff
 		"",
-		"--model",
+		"--settings", -- make sure it's not loading any memories or git instructions
+		'{"autoMemoryEnabled":false,"includeGitInstructions":false}',
+		"--setting-sources", -- don't load any settings
+		"",
+		"--model", -- configure the model, opus 4.6 is the last best known good model
 		"claude-opus-4-6",
-		"--output-format",
+		"--effort", -- set effor to xhigh, good mix between high and max
+		"xhigh",
+		"--output-format", -- stream the format to know it's working
 		"stream-json",
-		"--verbose",
-		"--include-partial-messages",
-		"--allowedTools",
+		"--verbose", -- helps with error messages
+		"--include-partial-messages", -- include any kind of partial responses to see why they failed
+		"--allowedTools", -- explicitly tell it, it has no allowed tools
 		"none",
-		"--disallowedTools",
+		"--disallowedTools", -- explicitly disable all built in tools. this is needed because otherwise it will try and call them even if it can't
 		"Read,Write,Edit,Bash,Glob,Grep,WebFetch,WebSearch,NotebookEdit,TodoWrite,Task,AskUserQuestion,Agent,Artifact,AskUserQuestion,CronCreate,CronDelete,CronList,EnterPlanMode,EnterWorktree,ExitPlanMode,ExitWorktree,ListMcpResourcesTool,LSP,Monitor,PowerShell,PushNotification,ReadMcpResourceTool,RemoteTrigger,ScheduleWakeup,SendMessage,SendUserFile,ShareOnboardingGuide,Skill,TaskCreate,TaskGet,TaskList,TaskOutput,TaskStop,TaskUpdate,ToolSearch,WaitForMcpServers,Workflow",
-		"--append-system-prompt",
+		"--no-session-persistence", -- make sure the conversation is not being saved anywhere else
+		"--system-prompt", -- the system prompt
 		system_prompt .. get_project_instructions(),
-		prompt,
+		prompt, -- the prompt itself
 	}
 end
 
@@ -132,6 +150,7 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 	local thinking_text = ""
 	local is_thinking = false
 	local partial_line = ""
+	local has_stderr_error = false
 
 	local function update_buffer()
 		if not vim.api.nvim_buf_is_valid(buf) then
@@ -165,6 +184,7 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 		on_stderr = function(_, data, _)
 			local msg = table.concat(data, "\n")
 			if msg ~= "" then
+				has_stderr_error = true
 				vim.schedule(function()
 					if vim.api.nvim_buf_is_valid(buf) then
 						vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split("Error: " .. msg, "\r?\n"))
@@ -215,7 +235,7 @@ local function stream_response(buf, cmd, prefix_lines, on_done)
 						update_buffer()
 					end
 					on_done(full_response)
-				elseif vim.api.nvim_buf_is_valid(buf) then
+				elseif not has_stderr_error and vim.api.nvim_buf_is_valid(buf) then
 					if exit_code ~= 0 then
 						local err_lines = prefix_lines and vim.list_extend({}, prefix_lines) or {}
 						table.insert(err_lines, "Error: request failed")
