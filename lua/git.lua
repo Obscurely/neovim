@@ -43,6 +43,51 @@ end, { desc = "Git log" })
 map("n", "<leader>gc", function()
 	require("fzf-lua").git_bcommits()
 end, { desc = "Git commits (buffer)" })
+map("n", "<leader>gX", function()
+	vim.ui.input({ prompt = "Restore file to last commit? (y/n): " }, function(confirm)
+		if confirm ~= "y" then
+			return
+		end
+		local file = vim.fn.expand("%")
+		vim.system({ "git", "checkout", "HEAD", "--", file }, { text = true }, function(result)
+			vim.schedule(function()
+				if result.code == 0 then
+					vim.cmd("edit!")
+					vim.notify("Restored to HEAD")
+				else
+					vim.notify("Failed: " .. result.stderr)
+				end
+			end)
+		end)
+	end)
+end, { desc = "Restore file to last commit" })
+
+-- Commit and push
+local float_input = require("util.float_input")
+map("n", "<leader>gC", function()
+	float_input("Commit message", function(msg)
+		if not msg or msg == "" then
+			return
+		end
+		vim.system({ "git", "commit", "-m", msg }, { text = true }, function(result)
+			vim.schedule(function()
+				vim.notify(result.code == 0 and "Committed" or "Commit failed: " .. result.stderr)
+			end)
+		end)
+	end)
+end, { desc = "Git commit" })
+map("n", "<leader>gP", function()
+	vim.ui.input({ prompt = "Push? (y/n): " }, function(confirm)
+		if confirm ~= "y" then
+			return
+		end
+		vim.system({ "git", "push" }, { text = true }, function(result)
+			vim.schedule(function()
+				vim.notify(result.code == 0 and "Pushed" or "Push failed: " .. result.stderr)
+			end)
+		end)
+	end)
+end, { desc = "Git push" })
 
 -- Blame
 map("n", "<leader>gb", gs.toggle_current_line_blame, { desc = "Toggle line blame" })
