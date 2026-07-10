@@ -31,6 +31,13 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- Diagnostics
 map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic float" })
+map("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = "Next diagnostic" })
+
+map("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = "Prev diagnostic" })
 
 -- Undotree
 map("n", "<leader>u", vim.cmd.Undotree, { desc = "Toggle undotree" })
