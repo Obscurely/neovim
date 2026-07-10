@@ -19,7 +19,7 @@ require("onedark").setup({
 	},
 	highlights = {
 		-- neovim
-		["Pmenu"] = { bg = "#233A33" },
+		["Pmenu"] = { bg = "#232A33" },
 		["PmenuSel"] = { bg = "#468dc7" },
 		["PmenuThumb"] = { bg = "#363f4f" },
 		["PmenuSbar"] = { bg = "#212630" },
