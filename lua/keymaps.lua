@@ -38,6 +38,9 @@ map("n", "<leader>u", vim.cmd.Undotree, { desc = "Toggle undotree" })
 -- Spell Check
 map("n", "<leader>s", "<cmd>set spell!<CR>", { desc = "Toggle spell check" })
 
+-- Clear search highlights
+map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+
 -- Preview Markdown
 local grip_job = nil
 map("n", "<leader>mp", function()
