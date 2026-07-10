@@ -25,6 +25,10 @@ map("n", "<leader>e", function()
 	end
 end, { desc = "Toggle file browser" })
 
+-- Visual mode move
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+
 -- Diagnostics
 map("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic float" })
 
