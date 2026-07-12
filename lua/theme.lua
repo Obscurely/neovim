@@ -32,6 +32,8 @@ require("onedark").setup({
 		["StatusLineTermNC"] = { bg = "#1e2430", fg = "#4a4e56" },
 		["MsgArea"] = { fg = "#6f737b" },
 		["Visual"] = { bg = "#2d3444" },
+		["ErrorMsg"] = { fg = "#8a4a52" },
+		["WarningMsg"] = { fg = "#9a8050" },
 		-- blink
 		["BlinkCmpMenu"] = { bg = "#232A33" },
 		["BlinkCmpScrollBarGutter"] = { bg = "#212630" },
