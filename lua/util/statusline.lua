@@ -50,10 +50,10 @@ function M.diagnostics()
 	local d = vim.diagnostic.count(0)
 	local parts = {}
 	if (d[vim.diagnostic.severity.ERROR] or 0) > 0 then
-		table.insert(parts, ":" .. d[vim.diagnostic.severity.ERROR])
+		table.insert(parts, "󰅙:" .. d[vim.diagnostic.severity.ERROR])
 	end
 	if (d[vim.diagnostic.severity.WARN] or 0) > 0 then
-		table.insert(parts, ":" .. d[vim.diagnostic.severity.WARN])
+		table.insert(parts, ":" .. d[vim.diagnostic.severity.WARN])
 	end
 	if (d[vim.diagnostic.severity.INFO] or 0) > 0 then
 		table.insert(parts, ":" .. d[vim.diagnostic.severity.INFO])
