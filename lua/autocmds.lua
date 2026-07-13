@@ -103,20 +103,38 @@ autocmd("BufRead", {
 })
 
 -- Refresh progress of lsp in status line
+local lsp_timer = vim.uv.new_timer()
 autocmd("LspProgress", {
 	callback = function()
-		vim.cmd("redrawstatus")
+		lsp_timer:stop()
+		lsp_timer:start(
+			100,
+			0,
+			vim.schedule_wrap(function()
+				vim.cmd("redrawstatus")
+			end)
+		)
 	end,
 })
 
 -- Disable diagnostics in .notes (side pane of no neck pain)
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = ".notes.md",
+autocmd("BufEnter", {
+	pattern = "*/.notes.md",
 	callback = function()
 		vim.diagnostic.enable(false, { bufnr = 0 })
 		local clients = vim.lsp.get_clients({ bufnr = 0 })
 		for _, client in ipairs(clients) do
 			vim.lsp.buf_detach_client(0, client.id)
+		end
+	end,
+})
+
+-- Auto create parent directories
+autocmd("BufWritePre", {
+	callback = function(args)
+		local dir = vim.fn.fnamemodify(args.file, ":p:h")
+		if vim.fn.isdirectory(dir) == 0 then
+			vim.fn.mkdir(dir, "p")
 		end
 	end,
 })
