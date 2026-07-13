@@ -1,5 +1,6 @@
 -- builtin plugins
 vim.cmd.packadd("nvim.undotree")
+vim.cmd.packadd("nvim.difftool") -- Onlyruns when DiffTool is called
 
 -- external plugins
 vim.pack.add({
