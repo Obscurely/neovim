@@ -61,6 +61,13 @@ map("n", "<leader>gX", function()
 		end)
 	end)
 end, { desc = "Restore file to last commit" })
+map("n", "<leader>gL", function()
+	vim.system({ "git", "pull" }, { text = true }, function(result)
+		vim.schedule(function()
+			vim.notify(result.code == 0 and result.stdout or "Pull failed: " .. result.stderr)
+		end)
+	end)
+end, { desc = "Git pull" })
 
 -- Commit and push
 local float_input = require("util.float_input")
